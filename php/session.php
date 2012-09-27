@@ -12,13 +12,25 @@ function restartSession() {
 	$_SESSION['data']['View-Model'] = session_id();
 }
 
-function setProp($key, $val) {
+function addToPatchOutput($path, $val) {
 	global $patchOutput;
-	$_SESSION['data'][$key] = $val;
+	foreach($patchOutput as $key => $value) {
+		if($patchOutput[$key]['replace'] == $path) {
+		  $patchOutput[$key]['value'] = $val;
+		  return;
+		}
+	}
 	array_push($patchOutput, array(
-		'replace' => '/' . $key,
+		'replace' => $path,
 		'value' => $val		
 	));
+}
+
+function setProp($key, $val) {
+	if($_SESSION['data'][$key] != $val) {
+		$_SESSION['data'][$key] = $val;
+		addToPatchOutput('/' . $key, $val);
+	}
 }
 
 function getProp($key) {
