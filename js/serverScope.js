@@ -41,15 +41,17 @@ angular.module('StarcounterLib', [])
 
       function setWatchers(scope, props) {
         for (var i = 0, ilen = props.length; i < ilen; i++) {
-          scope.$watch(props[i], (function(prop){return (function (current, previous, scope) {
-            if (rootLoaded) {
-              console.log(prop, "changed", current);
-              updateServer(scope, '/' + prop, current);
-            }
-            else {
-              console.log("ignoring", prop, "because root not loaded", current);
-            }
-          })})(props[i]), false);
+          scope.$watch(props[i], (function (prop) {
+            return (function (current, previous, scope) {
+              if (rootLoaded) {
+                console.log(prop, "changed", current);
+                updateServer(scope, '/' + prop, current);
+              }
+              else {
+                console.log("ignoring", prop, "because root not loaded", current);
+              }
+            })
+          })(props[i]), false);
         }
       }
 
