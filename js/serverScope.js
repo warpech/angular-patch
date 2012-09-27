@@ -29,7 +29,7 @@ angular.module('StarcounterLib', [])
         }
       }
 
-      var requestUrl = serverUrl + '/__vm';
+      var requestUrl = window.location.href + '/../__vm';
 
       function getRoot(scope) {
         $http({method: 'GET', url: requestUrl + '/' + __vm}).success(function (data, status, headers, config) {
