@@ -1,41 +1,19 @@
 <?php
 include "lib/JsonPatch.php";
+include "session.php";
 
-session_start();
-
-function restartSession() {
-	$jsonFile = file_get_contents('data.json');
-	$_SESSION['data'] = json_decode($jsonFile, true);
-	
-	$first = array("Al", "Fred", "Steve", "Joe", "Frank", "Paul");
-	$last = array("Bundy", "Flintstone", "Jobs", "Biden", "Sinatra", "McCartney");
-	$_SESSION['data']['FirstName'] = $first[array_rand($first)];
-	$_SESSION['data']['LastName'] = $last[array_rand($last)];
+$patchOutput = array();
+$method = $_SERVER['REQUEST_METHOD'];
+if(substr_count($_SERVER['HTTP_ACCEPT'], 'application/json')) {
+	$accept = 'json';
 }
-
-function setProp($key, $val) {
-	global $patchOutput;
-	$_SESSION['data'][$key] = $val;
-	array_push($patchOutput, array(
-		'replace' => '/' . $key,
-		'value' => $val		
-	));
-}
-
-function getProp($key) {
-	if(isset($_SESSION['data'][$key])) {
-		return $_SESSION['data'][$key];
-	}
-	else {
-		return null;
-	}
+else if(substr_count($_SERVER['HTTP_ACCEPT'], 'text/html')) {
+	$accept = 'html';
 }
 
 if(empty($_SESSION['data'])) {
 	restartSession();
 }
-
-$patchOutput = array();
 
 function applicationLogic() {
 	setProp('FullName', getProp('FirstName') . ' ' . getProp('LastName'));
@@ -49,7 +27,10 @@ function applicationLogic() {
 	}
 }
 
-if($_SERVER['REQUEST_METHOD'] === 'GET') {
+if($accept == 'html' && $method === 'GET') {
+	include "template/index.html";
+}
+if($accept == 'json' && $method === 'GET') {
 	if(isset($_GET['restartSession'])) {
 		restartSession();
 		echo json_encode(array("result" => "ok"));
@@ -59,7 +40,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 		echo json_encode($_SESSION['data']);
 	}
 }
-else if($_SERVER['REQUEST_METHOD'] === 'PATCH') {
+else if($accept == 'json' && $method === 'PATCH') {
 	$post = file_get_contents('php://input');
 	$patchInput = json_decode($post, true);
 	
