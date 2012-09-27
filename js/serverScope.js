@@ -22,9 +22,7 @@ angular.module('StarcounterLib', [])
         $http({method: 'GET', url: 'php/server.php'}).success(function (data, status, headers, config) {
           overwriteRoot(scope, data);
           rootLoaded = true;
-        }).error(function (data, status, headers, config) {
-            console.error("server error", arguments);
-          });
+        });
       }
 
       function updateServer(scope, path, value) {
@@ -34,9 +32,7 @@ angular.module('StarcounterLib', [])
         };
         $http({method: 'PATCH', url: 'php/server.php', data: data}).success(function (data, status, headers, config) {
           patchRoot(scope, data);
-        }).error(function (data, status, headers, config) {
-            console.log("error", data);
-          });
+        });
       }
 
       function setWatchers(scope, props) {
@@ -44,11 +40,7 @@ angular.module('StarcounterLib', [])
           scope.$watch(props[i], (function (prop) {
             return (function (current, previous, scope) {
               if (rootLoaded) {
-                console.log(prop, "changed", current);
                 updateServer(scope, '/' + prop, current);
-              }
-              else {
-                console.log("ignoring", prop, "because root not loaded", current);
               }
             })
           })(props[i]), false);
