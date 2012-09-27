@@ -32,7 +32,7 @@ angular.module('StarcounterLib', [])
           "replace": path,
           "value": value
         };
-        $http({method: 'POST', url: 'php/server.php', data: data}).success(function (data, status, headers, config) {
+        $http({method: 'PATCH', url: 'php/server.php', data: data}).success(function (data, status, headers, config) {
           patchRoot(scope, data);
         }).error(function (data, status, headers, config) {
             console.log("error", data);

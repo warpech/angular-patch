@@ -41,7 +41,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
 		echo json_encode($_SESSION['data']);
 	}
 }
-else if($_SERVER['REQUEST_METHOD'] === 'POST' || $_SERVER['REQUEST_METHOD'] === 'PATCH') {
+else if($_SERVER['REQUEST_METHOD'] === 'PATCH') {
 	$post = file_get_contents('php://input');
 	$patchInput = json_decode($post, true);
 	
