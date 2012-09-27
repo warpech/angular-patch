@@ -5,6 +5,7 @@ angular.module('StarcounterLib', [])
     compile: function compile(tElement, tAttrs, transclude) {
 
       var rootLoaded = false;
+      var __vm = null;
 
       function overwriteRoot(scope, data) {
         for (var i in data) {
@@ -18,8 +19,20 @@ angular.module('StarcounterLib', [])
         jsonpatch.apply(scope, patch);
       }
 
+      function parseViewModelId() {
+        var meta = document.getElementsByTagName('meta');
+        for (var i = 0, ilen = meta.length; i < ilen; i++) {
+          if (angular.element(meta[i]).attr('name') == 'View-Model') {
+            __vm = angular.element(meta[i]).attr('content');
+            break;
+          }
+        }
+      }
+
+      var requestUrl = serverUrl + '/__vm';
+
       function getRoot(scope) {
-        $http({method: 'GET', url: serverUrl}).success(function (data, status, headers, config) {
+        $http({method: 'GET', url: requestUrl + '/' + __vm}).success(function (data, status, headers, config) {
           overwriteRoot(scope, data);
           rootLoaded = true;
         });
@@ -30,7 +43,7 @@ angular.module('StarcounterLib', [])
           "replace": path,
           "value": value
         };
-        $http({method: 'PATCH', url: serverUrl, data: data}).success(function (data, status, headers, config) {
+        $http({method: 'PATCH', url: requestUrl + '/' + __vm, data: data}).success(function (data, status, headers, config) {
           patchRoot(scope, data);
         });
       }
@@ -48,6 +61,8 @@ angular.module('StarcounterLib', [])
       }
 
       return function postLink(scope, element, attrs, controller) {
+        parseViewModelId();
+
         if (typeof scope.FirstName === 'undefined') {
           getRoot(scope);
         }
