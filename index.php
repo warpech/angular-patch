@@ -32,6 +32,17 @@ if(empty($_SESSION['data'])) {
 function applicationLogic() {
 	setProp('FullName', getProp('FirstName') . ' ' . getProp('LastName'));
 	
+	$Address = getProp('Address');
+	if(!empty($Address['Street']) && !empty($Address['City'])) {
+		setProp('FullName', getProp('FullName') . ', from ' . $Address['Street'] . ' in ' . $Address['City']);
+	}
+	else if(!empty($Address['City'])) {
+		setProp('FullName', getProp('FullName') . ', from ' . $Address['City']);
+	}
+	else if(!empty($Address['Street'])) {
+		setProp('FullName', getProp('FullName') . ', from ' . $Address['Street']);
+	}
+	
 	$myTextBox = getProp('MyTextBox');
 	if(empty($myTextBox)) {
 		setProp('MyMessage', "Please put something to text box");

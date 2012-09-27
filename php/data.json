@@ -2,6 +2,10 @@
 	"FirstName": null,
 	"LastName": null,
 	"FullName": null,
-	"MyTextBox": null,
-	"MyMessage": null
+  "Address": {
+    "Street": null,
+    "City": null
+  },
+  "MyTextBox": null,
+  "MyMessage": null
 }

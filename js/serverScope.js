@@ -54,7 +54,7 @@ angular.module('StarcounterLib', [])
           scope.$watch(props[i], (function (prop) {
             return (function (current, previous, scope) {
               if (rootLoaded) {
-                updateServer(scope, '/' + prop, current);
+                updateServer(scope, '/' + prop.replace(/\./g, '/'), current);
               }
             })
           })(props[i]), false);
@@ -72,7 +72,7 @@ angular.module('StarcounterLib', [])
         }
 
 
-        setWatchers(scope, ['FirstName', 'LastName', 'MyTextBox']);
+        setWatchers(scope, ['FirstName', 'LastName', 'MyTextBox', 'Address.Street', 'Address.City']);
       }
     }
   };
