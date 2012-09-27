@@ -27,55 +27,38 @@ angular.module('StarcounterLib', [])
           });
       }
 
+      function updateServer(scope, path, value) {
+        var data = {
+          "replace": path,
+          "value": value
+        };
+        $http({method: 'POST', url: 'php/server.php', data: data}).success(function (data, status, headers, config) {
+          patchRoot(scope, data);
+        }).error(function (data, status, headers, config) {
+            console.log("error", data);
+          });
+      }
+
+      function setWatchers(scope, props) {
+        for (var i = 0, ilen = props.length; i < ilen; i++) {
+          scope.$watch(props[i], (function(prop){return (function (current, previous, scope) {
+            if (rootLoaded) {
+              console.log(prop, "changed", current);
+              updateServer(scope, '/' + prop, current);
+            }
+            else {
+              console.log("ignoring", prop, "because root not loaded", current);
+            }
+          })})(props[i]), false);
+        }
+      }
+
       return function postLink(scope, element, attrs, controller) {
-
-
-
         if (typeof scope.FirstName === 'undefined') {
           getRoot(scope);
         }
 
-        function updateServer(path, value) {
-          var data = {
-            "replace": path,
-            "value": value
-          };
-          $http({method: 'POST', url: 'php/server.php', data: data}).success(function (data, status, headers, config) {
-            patchRoot(scope, data);
-          }).error(function (data, status, headers, config) {
-              console.log("error", data);
-            });
-        }
-
-        scope.$watch('FirstName', function (current, previous, scope) {
-          if(rootLoaded) {
-            console.log("FirstName changed", current);
-            updateServer('/FirstName', current);
-          }
-          else {
-            console.log("ignoring FirstName because root not loaded", current);
-          }
-        }, false);
-
-        scope.$watch('LastName', function (current, previous, scope) {
-          if(rootLoaded) {
-            console.log("LastName changed", current);
-            updateServer('/LastName', current);
-          }
-          else {
-            console.log("ignoring LastName because root not loaded", current);
-          }
-        }, false);
-
-        scope.$watch('FullName', function (current, previous, scope) {
-          if(rootLoaded) {
-            console.log("FullName changed", current);
-            //updateServer('/FullName', current);
-          }
-          else {
-            console.log("ignoring FullName because root not loaded", current);
-          }
-        }, false);
+        setWatchers(scope, ['FirstName', 'LastName']);
       }
     }
   };
