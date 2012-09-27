@@ -1,5 +1,7 @@
 {
 	"FirstName": "Marcin",
 	"LastName": "Warpechowski",
-	"FullName": null
+	"FullName": null,
+	"MyTextBox": null,
+	"MyMessage": null
 }

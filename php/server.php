@@ -18,7 +18,12 @@ function setProp($key, $val) {
 }
 
 function getProp($key) {
-	return $_SESSION['data'][$key];
+	if(isset($_SESSION['data'][$key])) {
+		return $_SESSION['data'][$key];
+	}
+	else {
+		return null;
+	}
 }
 
 if(empty($_SESSION['data'])) {
@@ -29,6 +34,14 @@ $patchOutput = array();
 
 function applicationLogic() {
 	setProp('FullName', getProp('FirstName') . ' ' . getProp('LastName'));
+	
+	$myTextBox = getProp('MyTextBox');
+	if(empty($myTextBox)) {
+		setProp('MyMessage', "Please put something to text box");
+	}
+	else {
+		setProp('MyMessage', "I got it, " . $myTextBox . "!");
+	}
 }
 
 if($_SERVER['REQUEST_METHOD'] === 'GET') {

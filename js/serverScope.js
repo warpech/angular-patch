@@ -60,7 +60,7 @@ angular.module('StarcounterLib', [])
           getRoot(scope);
         }
 
-        setWatchers(scope, ['FirstName', 'LastName']);
+        setWatchers(scope, ['FirstName', 'LastName', 'MyTextBox']);
       }
     }
   };
