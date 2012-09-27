@@ -44,15 +44,12 @@ function applicationLogic() {
 }
 
 if($accept == 'html' && $method == 'GET' && $path == "/test" ) {
+	restartSession();
 	header('View-Model: ' . getProp('__vm'));
 	include "html/index.html";
 }
 else if($accept == 'html' && $method == 'GET') {
 	include "html/404.html";
-}
-else if($accept == 'json' && $method == 'GET' && $path == '/restartSession') {
-	restartSession();
-	echo json_encode(array("result" => "ok"));
 }
 else if($accept == 'json' && $__vm != getProp('__vm')) {
 	echo json_encode(array("error" => "wrong __vm param '{$__vm}'"));
