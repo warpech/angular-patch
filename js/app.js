@@ -1,9 +1,9 @@
-function MyCtrl($scope, $http, $location) {
-  console.log("hi");
+var serverUrl = window.location.href + '/..';
 
+function MyCtrl($scope, $http, $location) {
   $scope.restartSession = function () {
     console.log("restartSession");
-    $http({method: 'GET', url: window.location.href + '?restartSession=true'}).success(function () {
+    $http({method: 'GET', url: serverUrl + '?restartSession=true'}).success(function () {
       window.location.reload();
     });
   }

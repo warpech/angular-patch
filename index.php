@@ -2,7 +2,13 @@
 include "php/lib/JsonPatch.php";
 include "php/session.php";
 
+if(empty($_SERVER['PATH_INFO'])){
+	header('Location: ' . $_SERVER['REQUEST_URI'] . '/');
+	die();
+}
+
 $patchOutput = array();
+$path = $_SERVER['PATH_INFO'];
 $method = $_SERVER['REQUEST_METHOD'];
 if(substr_count($_SERVER['HTTP_ACCEPT'], 'application/json')) {
 	$accept = 'json';
@@ -27,10 +33,13 @@ function applicationLogic() {
 	}
 }
 
-if($accept == 'html' && $method === 'GET') {
+if($accept == 'html' && $method == 'GET' && $path == "/test" ) {
 	include "html/index.html";
 }
-if($accept == 'json' && $method === 'GET') {
+else if($accept == 'html' && $method == 'GET') {
+	include "html/404.html";
+}
+else if($accept == 'json' && $method == 'GET') {
 	if(isset($_GET['restartSession'])) {
 		restartSession();
 		echo json_encode(array("result" => "ok"));
@@ -40,7 +49,7 @@ if($accept == 'json' && $method === 'GET') {
 		echo json_encode($_SESSION['data']);
 	}
 }
-else if($accept == 'json' && $method === 'PATCH') {
+else if($accept == 'json' && $method == 'PATCH') {
 	$post = file_get_contents('php://input');
 	$patchInput = json_decode($post, true);
 	
