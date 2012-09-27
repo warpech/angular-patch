@@ -2,7 +2,7 @@
 session_start();
 
 function restartSession() {
-	$jsonFile = file_get_contents('data.json');
+	$jsonFile = file_get_contents('php/data.json');
 	$_SESSION['data'] = json_decode($jsonFile, true);
 	
 	$first = array("Al", "Fred", "Steve", "Joe", "Frank", "Paul");

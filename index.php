@@ -1,6 +1,6 @@
 <?php
-include "lib/JsonPatch.php";
-include "session.php";
+include "php/lib/JsonPatch.php";
+include "php/session.php";
 
 $patchOutput = array();
 $method = $_SERVER['REQUEST_METHOD'];
@@ -28,7 +28,7 @@ function applicationLogic() {
 }
 
 if($accept == 'html' && $method === 'GET') {
-	include "template/index.html";
+	include "html/index.html";
 }
 if($accept == 'json' && $method === 'GET') {
 	if(isset($_GET['restartSession'])) {

@@ -19,7 +19,7 @@ angular.module('StarcounterLib', [])
       }
 
       function getRoot(scope) {
-        $http({method: 'GET', url: 'php/server.php'}).success(function (data, status, headers, config) {
+        $http({method: 'GET', url: window.location.href}).success(function (data, status, headers, config) {
           overwriteRoot(scope, data);
           rootLoaded = true;
         });
@@ -30,7 +30,7 @@ angular.module('StarcounterLib', [])
           "replace": path,
           "value": value
         };
-        $http({method: 'PATCH', url: 'php/server.php', data: data}).success(function (data, status, headers, config) {
+        $http({method: 'PATCH', url: window.location.href, data: data}).success(function (data, status, headers, config) {
           patchRoot(scope, data);
         });
       }
