@@ -5,7 +5,6 @@ angular.module('StarcounterLib', [])
     compile: function compile(tElement, tAttrs, transclude) {
 
       var rootLoaded = false;
-      var __vm = null;
 
       function overwriteRoot(scope, data) {
         for (var i in data) {
@@ -19,20 +18,22 @@ angular.module('StarcounterLib', [])
         jsonpatch.apply(scope, patch);
       }
 
-      function parseViewModelId() {
+      function parseViewModelId(scope) {
         var meta = document.getElementsByTagName('meta');
         for (var i = 0, ilen = meta.length; i < ilen; i++) {
           if (angular.element(meta[i]).attr('name') == 'View-Model') {
-            __vm = angular.element(meta[i]).attr('content');
+            scope['View-Model'] = angular.element(meta[i]).attr('content');
             break;
           }
         }
       }
 
-      var requestUrl = window.location.href + '/../__vm';
+      function getRequestUrl(scope) {
+        return window.location.href + '/../__vm/' + scope['View-Model'];
+      }
 
       function getRoot(scope) {
-        $http({method: 'GET', url: requestUrl + '/' + __vm}).success(function (data, status, headers, config) {
+        $http({method: 'GET', url: getRequestUrl(scope)}).success(function (data, status, headers, config) {
           overwriteRoot(scope, data);
           rootLoaded = true;
         });
@@ -43,7 +44,7 @@ angular.module('StarcounterLib', [])
           "replace": path,
           "value": value
         };
-        $http({method: 'PATCH', url: requestUrl + '/' + __vm, data: data}).success(function (data, status, headers, config) {
+        $http({method: 'PATCH', url: getRequestUrl(scope), data: data}).success(function (data, status, headers, config) {
           patchRoot(scope, data);
         });
       }
@@ -61,11 +62,15 @@ angular.module('StarcounterLib', [])
       }
 
       return function postLink(scope, element, attrs, controller) {
-        parseViewModelId();
-
-        if (typeof scope.FirstName === 'undefined') {
+        if (typeof window.__elim_rq !== 'undefined') {
+          overwriteRoot(scope, window.__elim_rq);
+          rootLoaded = true;
+        }
+        else {
+          parseViewModelId(scope);
           getRoot(scope);
         }
+
 
         setWatchers(scope, ['FirstName', 'LastName', 'MyTextBox']);
       }

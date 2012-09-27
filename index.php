@@ -2,6 +2,8 @@
 include "php/lib/JsonPatch.php";
 include "php/session.php";
 
+$injectEliminateRequest = true;
+
 if(empty($_SERVER['PATH_INFO'])){
 	header('Location: ' . $_SERVER['REQUEST_URI'] . '/');
 	die();
@@ -45,13 +47,14 @@ function applicationLogic() {
 
 if($accept == 'html' && $method == 'GET' && $path == "/test" ) {
 	restartSession();
-	header('View-Model: ' . getProp('__vm'));
+	applicationLogic();
 	include "html/index.html";
 }
 else if($accept == 'html' && $method == 'GET') {
 	include "html/404.html";
 }
-else if($accept == 'json' && $__vm != getProp('__vm')) {
+else if($accept == 'json' && $__vm != getProp('View-Model')) {
+	header(':', true, 401);
 	echo json_encode(array("error" => "wrong __vm param '{$__vm}'"));
 }
 else if($accept == 'json' && $method == 'GET') {

@@ -9,7 +9,7 @@ function restartSession() {
 	$last = array("Bundy", "Flintstone", "Jobs", "Biden", "Sinatra", "McCartney");
 	$_SESSION['data']['FirstName'] = $first[array_rand($first)];
 	$_SESSION['data']['LastName'] = $last[array_rand($last)];
-	$_SESSION['data']['__vm'] = session_id();
+	$_SESSION['data']['View-Model'] = session_id();
 }
 
 function setProp($key, $val) {
