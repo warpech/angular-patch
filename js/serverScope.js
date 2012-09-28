@@ -1,5 +1,5 @@
-angular.module('StarcounterLib', [])
-  .directive('serverScope', ['$http', function ($http) {
+angular.module('StarcounterLib', ['panelApp'])
+  .directive('serverScope', ['$http', 'appContext', function ($http, appContext) {
   var directiveDefinitionObject = {
     restrict: 'A',
     compile: function compile(tElement, tAttrs, transclude) {
@@ -15,7 +15,10 @@ angular.module('StarcounterLib', [])
       }
 
       function patchRoot(scope, patch) {
-        jsonpatch.apply(scope, patch);
+        if (patch.length) {
+          console.log("patch", patch);
+          jsonpatch.apply(scope, patch);
+        }
       }
 
       function parseViewModelId(scope) {
@@ -71,8 +74,26 @@ angular.module('StarcounterLib', [])
           getRoot(scope);
         }
 
+        var tree = appContext.getScopeTree(scope);
+        var watched = [];
 
-        setWatchers(scope, ['FirstName', 'LastName', 'MyTextBox', 'Address.Street', 'Address.City']);
+        function findWatchedRecursive(watched, obj, parent) {
+          parent = parent || '';
+          for (var i in obj) {
+            if (obj.hasOwnProperty(i)) {
+              if (Object.prototype.toString.apply(obj[i]) === '[object Object]') {
+                findWatchedRecursive(watched, obj[i], parent + i + '.');
+              }
+              else if (typeof obj[i] !== "function") {
+                watched.push(parent + i);
+              }
+            }
+          }
+        }
+
+        findWatchedRecursive(watched, tree.locals);
+
+        setWatchers(scope, watched);
       }
     }
   };

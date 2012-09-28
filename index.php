@@ -76,7 +76,16 @@ else if($accept == 'json' && $method == 'PATCH') {
 	$post = file_get_contents('php://input');
 	$patchInput = json_decode($post, true);
 	
-	$_SESSION['data'] = JsonPatch::patch($_SESSION['data'], array($patchInput));	
+	try {
+	  $_SESSION['data'] = @JsonPatch::patch($_SESSION['data'], array($patchInput));	  
+	}
+	catch (Exception $e) {
+		header(':', true, 404);
+		$patchOutput = array(
+			"error" => $e->getMessage()
+		);
+	}
+	
 	applicationLogic();
 	echo json_encode($patchOutput);
 }
