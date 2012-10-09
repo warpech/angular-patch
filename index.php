@@ -29,6 +29,10 @@ if(empty($_SESSION['data'])) {
 	restartSession();
 }
 
+function isLampOn($lamp) {
+	return ($lamp['State'] == true);
+}
+
 function applicationLogic() {
 	setProp('FullName', getProp('FirstName') . ' ' . getProp('LastName'));
 	
@@ -54,6 +58,11 @@ function applicationLogic() {
 	else {
 		setProp('MyMessage', "I got it, " . $myTextBox . "!");
 	}
+	
+	$lamps = getProp('Lamps');
+	$total = count($lamps);
+	$on = count(array_filter($lamps, 'isLampOn'));
+	setProp('LampSummary', 'I have ' . ($total - $on) . ' lamps off and ' . $on . ' lamps on.');
 }
 
 if($accept == 'html' && $method == 'GET' && $path == "/test" ) {

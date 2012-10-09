@@ -49,5 +49,24 @@
 <input ng-model="MyTextBox">
 <div>{{MyMessage}}</div>
 
+<hr>
+
+<h1>Lamps</h1>
+
+<button ng-click="addLamp()">Add new lamp</button>
+
+<ol>
+  <li ng-repeat="Lamp in Lamps">
+    is
+    <label>
+      <input type="checkbox" ng-model="Lamp.State">
+      <span ng-show="Lamp.State" style="background: yellow;">ON</span>
+      <span ng-show="!Lamp.State" style="background: black; color: white;">OFF</span>
+    </label>
+  </li>
+</ol>
+
+<p>{{LampSummary}}</p>
+
 </body>
 </html>

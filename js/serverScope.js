@@ -60,7 +60,7 @@ angular.module('StarcounterLib', ['panelApp'])
                 updateServer(scope, '/' + prop.replace(/\./g, '/'), current);
               }
             })
-          })(props[i]), false);
+          })(props[i]), true);
         }
       }
 

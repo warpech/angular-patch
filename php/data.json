@@ -7,5 +7,7 @@
     "City": null
   },
   "MyTextBox": null,
-  "MyMessage": null
+  "MyMessage": null,
+  "Lamps": [],
+  "LampSummary": null
 }
