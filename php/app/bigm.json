@@ -1,0 +1,13 @@
+{
+    "FirstName": null,
+    "LastName": null,
+    "FullName": null,
+    "Address": {
+        "Street": null,
+        "City": null
+    },
+    "MyTextBox": null,
+    "MyMessage": null,
+    "Lamps": [],
+    "LampSummary": null
+}

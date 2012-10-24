@@ -1,72 +1,72 @@
 <!doctype html>
 <html lang="en" ng-app="StarcounterLib">
-<head>
-  <?php if($injectEliminateRequest == true) { ?>
-  <script>
-    var __elim_rq = <?php echo json_encode($_SESSION['data']) ?>;
-  </script>
-  <?php } ?>
-  <meta charset="utf-8">
-  <title>Angular Patch demo</title>
-  <script src="../js/lib/angular.min.js"></script>
-  <script src="../js/lib/jsonpatch.js"></script>
-  <script src="../js/lib/appContext.js"></script>
-  <script src="../js/serverScope.js"></script>
-  <script src="../js/app.js"></script>
-  <?php if($injectEliminateRequest == false) { ?>
-  <meta name="View-Model" content="<?php echo $_SESSION['data']['__vm']?>">
-  <?php } ?>
-</head>
-<body ng-controller="MyCtrl" server-scope>
+  <head>
+    <?php if($injectEliminateRequest == true) { ?>
+    <script>
+      var __elim_rq = <?php echo json_encode($_SESSION['data']) ?>;
+    </script>
+    <?php } ?>
+    <meta charset="utf-8">
+    <title>Angular Patch demo</title>
+    <script src="../js/lib/angular.min.js"></script>
+    <script src="../js/lib/jsonpatch.js"></script>
+    <script src="../js/lib/appContext.js"></script>
+    <script src="../js/serverScope.js"></script>
+    <script src="../js/app.js"></script>
+    <?php if($injectEliminateRequest == false) { ?>
+    <meta name="View-Model" content="<?php echo $_SESSION['data']['__vm']?>">
+    <?php } ?>
+  </head>
+  <body ng-controller="MyCtrl" server-scope>
 
-<h1>Angular Patch demo</h1>
+    <h1>Angular Patch demo</h1>
 
-<p>The session is restarted when you refresh the window. Random name is generated on session start</p>
+    <p>The session is restarted when you refresh the window. Random name is generated on session start</p>
 
-<p><button ng-click="clientChange()">Put controller's name</button></p>
+    <p><button ng-click="clientChange()">Put controller's name</button></p>
 
-<table>
-  <tr>
-    <td>First name</td>
-    <td><input ng-model="FirstName"></td>
-  </tr>
-  <tr>
-    <td>Last name</td>
-    <td><input ng-model="LastName"></td>
-  </tr>
-  <tr>
-    <td>Full name (generated on server)</td>
-    <td><input ng-model="FullName" ng-readonly="true" style="opacity: 0.7; width: 400px"></td>
-  </tr>
-  <tr>
-    <td>Address</td>
-    <td>Street: <input ng-model="Address.Street"> City: <input ng-model="Address.City"></td>
-  </tr>
-</table>
+    <table>
+      <tr>
+        <td>First name</td>
+        <td><input ng-model="FirstName"></td>
+      </tr>
+      <tr>
+        <td>Last name</td>
+        <td><input ng-model="LastName"></td>
+      </tr>
+      <tr>
+        <td>Full name (generated on server)</td>
+        <td><input ng-model="FullName" ng-readonly="true" style="opacity: 0.7; width: 400px"></td>
+      </tr>
+      <tr>
+        <td>Address</td>
+        <td>Street: <input ng-model="Address.Street"> City: <input ng-model="Address.City"></td>
+      </tr>
+    </table>
 
-<hr>
+    <hr>
 
-<input ng-model="MyTextBox">
-<div>{{MyMessage}}</div>
+    <input ng-model="MyTextBox">
+    <div>{{MyMessage}}</div>
 
-<hr>
+    <hr>
 
-<h1>Lamps</h1>
+    <h1>Lamps</h1>
 
-<button ng-click="addLamp()">Add new lamp</button>
+    <button ng-click="addLamp()">Add new lamp</button>
 
-<ol>
-  <li ng-repeat="Lamp in Lamps">
-    is
-    <label>
-      <input type="checkbox" ng-model="Lamp.State">
-      <span ng-show="Lamp.State" style="background: yellow;">ON</span>
-      <span ng-show="!Lamp.State" style="background: black; color: white;">OFF</span>
-    </label>
-  </li>
-</ol>
+    <ol>
+      <li ng-repeat="Lamp in Lamps">
+        is
+        <label>
+          <input type="checkbox" ng-model="Lamp.State">
+          <span ng-show="Lamp.State" style="background: yellow;">ON</span>
+          <span ng-show="!Lamp.State" style="background: black; color: white;">OFF</span>
+        </label>
+      </li>
+    </ol>
 
-<p>{{LampSummary}}</p>
+    <p>{{LampSummary}}</p>
 
-</body>
+  </body>
 </html>
