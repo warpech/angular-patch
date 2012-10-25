@@ -5,8 +5,8 @@ angular.module('StarcounterLib', [])
       compile: function compile(tElement, tAttrs, transclude) {
 
         var defaultSettings = {
-          rows: 6,
-          cols: 3,
+          startRows: 0,
+          startCols: 3,
           outsideClickDeselects: false,
           autoComplete: []
         };
@@ -88,6 +88,7 @@ angular.module('StarcounterLib', [])
 
           if (columns.length > 0) {
             settings['columns'] = columns;
+            settings['startCols'] = columns.length;
           }
 
           if (colHeaders.length > 0) {
