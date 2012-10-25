@@ -7,76 +7,41 @@
     </script>
     <?php } ?>
     <meta charset="utf-8">
-    <title>McOrder Angular Patch demo</title>
+    <title>Angular Patch McOrder demo</title>
     <script src="../js/lib/angular.min.js"></script>
     <script src="../js/lib/angular-datagrid.js"></script>
 
     <script src="../js/lib/handsontable/lib/jquery.min.js"></script>
     <script src="../js/lib/handsontable/jquery.handsontable.js"></script>
     <script src="../js/lib/handsontable/lib/bootstrap-typeahead.js"></script>
+    <script src="../js/lib/handsontable/lib/jquery.autoresize.js"></script>
     <script src="../js/lib/handsontable/lib/jQuery-contextMenu/jquery.contextMenu.js"></script>
     <script src="../js/lib/handsontable/lib/jQuery-contextMenu/jquery.ui.position.js"></script>
     <link rel="stylesheet" media="screen" href="../js/lib/handsontable/lib/jQuery-contextMenu/jquery.contextMenu.css">
     <link rel="stylesheet" media="screen" href="../js/lib/handsontable/jquery.handsontable.css">
 
-    <script src="../js/lib/jsonpatch.js"></script>
+    <!--<script src="../js/lib/jsonpatch.js"></script>
     <script src="../js/lib/appContext.js"></script>
-    <script src="../js/serverScope.js"></script>
-    <script src="../js/app.js"></script>
+    <script src="../js/serverScope.js"></script>-->
+    <script src="../js/app_mcorder.js"></script>
     <?php if($injectEliminateRequest == false) { ?>
     <meta name="View-Model" content="<?php echo $_SESSION['data']['__vm']?>">
     <?php } ?>
   </head>
   <body ng-controller="MyCtrl" server-scope>
 
-    <h1>Angular Patch demo</h1>
+    <h1>Angular Patch McOrder demo</h1>
 
     <p>The session is restarted when you refresh the window. Random name is generated on session start</p>
 
-    <p><button ng-click="clientChange()">Put controller's name</button></p>
+    <button ng-click="dumpItems()">Dump object to console</button>
 
-    <table>
-      <tr>
-        <td>First name</td>
-        <td><input ng-model="FirstName"></td>
-      </tr>
-      <tr>
-        <td>Last name</td>
-        <td><input ng-model="LastName"></td>
-      </tr>
-      <tr>
-        <td>Full name (generated on server)</td>
-        <td><input ng-model="FullName" ng-readonly="true" style="opacity: 0.7; width: 400px"></td>
-      </tr>
-      <tr>
-        <td>Address</td>
-        <td>Street: <input ng-model="Address.Street"> City: <input ng-model="Address.City"></td>
-      </tr>
-    </table>
+    <h2>Order no {{OrderNo}} ({{Items.length}} items)</h2>
 
-    <hr>
-
-    <input ng-model="MyTextBox">
-    <div>{{MyMessage}}</div>
-
-    <hr>
-
-    <h1>Lamps</h1>
-
-    <button ng-click="addLamp()">Add new lamp</button>
-
-    <ol>
-      <li ng-repeat="Lamp in Lamps">
-        is
-        <label>
-          <input type="checkbox" ng-model="Lamp.State">
-          <span ng-show="Lamp.State" style="background: yellow;">ON</span>
-          <span ng-show="!Lamp.State" style="background: black; color: white;">OFF</span>
-        </label>
-      </li>
-    </ol>
-
-    <p>{{LampSummary}}</p>
+    <div ui-datagrid datarows="item in Items">
+      <datacolumn value="item.Product._Search$" title="Product"/>
+      <datacolumn value="item.Quantity$" title="Quantity"/>
+    </div>
 
   </body>
 </html>

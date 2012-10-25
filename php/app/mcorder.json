@@ -1,13 +1,24 @@
 {
-    "FirstName": null,
-    "LastName": null,
-    "FullName": null,
-    "Address": {
-        "Street": null,
-        "City": null
+  "OrderNo":123,	
+  "Items": [{
+    "Product": {
+      "_Search$":"Big M",
+      "_Options": [
+      {
+        "Description":"Big Mac", 
+        "Image":"bigmac.png", 
+        "Pick$":null
+      },
+      {
+        "Description":"Big Mac & Co", 
+        "Image":"bigmac_co.png", 
+        "Pick$":null
+      }					
+      ]
     },
-    "MyTextBox": null,
-    "MyMessage": null,
-    "Lamps": [],
-    "LampSummary": null
+    "Quantity$":5
+  }],
+  "Total": 50.00,
+  "Save$": null,
+  "Cancel$": null
 }
