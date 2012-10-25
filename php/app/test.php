@@ -4,6 +4,13 @@ function isLampOn($lamp) {
   return ($lamp['State'] == true);
 }
 
+function applicationStart() {
+  $first = array("Al", "Fred", "Steve", "Joe", "Frank", "Paul");
+  $last = array("Bundy", "Flintstone", "Jobs", "Biden", "Sinatra", "McCartney");
+  setProp('FirstName', $first[array_rand($first)]);
+  setProp('LastName', $last[array_rand($last)]);
+}
+
 function applicationLogic() {
   setProp('FullName', getProp('FirstName') . ' ' . getProp('LastName'));
 

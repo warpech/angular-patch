@@ -47,6 +47,7 @@ else if (substr_count($_SERVER['HTTP_ACCEPT'], 'text/html')) {
 
 if ($accept == 'html' && $method == 'GET') {
   restartSession();
+  applicationStart();
   applicationLogic();
   include $tplPath;
 }

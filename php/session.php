@@ -5,11 +5,6 @@ function restartSession() {
   $jsonFile = file_get_contents($jsonPath);
   $_SESSION['appName'] = $appName;
   $_SESSION['data'] = json_decode($jsonFile, true);
-
-  $first = array("Al", "Fred", "Steve", "Joe", "Frank", "Paul");
-  $last = array("Bundy", "Flintstone", "Jobs", "Biden", "Sinatra", "McCartney");
-  $_SESSION['data']['FirstName'] = $first[array_rand($first)];
-  $_SESSION['data']['LastName'] = $last[array_rand($last)];
   $_SESSION['data']['View-Model'] = session_id();
 }
 
