@@ -5,6 +5,9 @@ function restartSession() {
   $jsonFile = file_get_contents($jsonPath);
   $_SESSION['appName'] = $appName;
   $_SESSION['data'] = json_decode($jsonFile, true);
+  if($_SESSION['data'] === null) {
+    throw new Exception("JSON file '$jsonPath' could not be parsed");
+  }
   $_SESSION['data']['View-Model'] = session_id();
 }
 
