@@ -14,7 +14,7 @@ if (!empty($matches[1])) {
   $__vm = $matches[1];
 }
 
-if (!empty($_SESSION['appName'])) {
+if (!empty($__vm) && !empty($_SESSION['appName'])) {
   $appName = $_SESSION['appName'];
 }
 else {
@@ -43,10 +43,6 @@ if (substr_count($_SERVER['HTTP_ACCEPT'], 'application/json')) {
 }
 else if (substr_count($_SERVER['HTTP_ACCEPT'], 'text/html')) {
   $accept = 'html';
-}
-
-if (empty($_SESSION['data'])) {
-  restartSession();
 }
 
 if ($accept == 'html' && $method == 'GET') {
