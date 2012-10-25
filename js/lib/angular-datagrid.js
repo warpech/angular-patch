@@ -1,4 +1,4 @@
-angular.module('StarcounterLib', [])
+angular.module('ui.directives', [])
   .directive('uiDatagrid', function () {
     var directiveDefinitionObject = {
       restrict: 'A',
@@ -16,7 +16,7 @@ angular.module('StarcounterLib', [])
         return function postLink(scope, element, attrs, controller) {
           var expression = attrs.datarows;
           var match = expression.match(/^\s*(.+)\s+in\s+(.*)\s*$/),
-            lhs, rhs, valueIdent, keyIdent;
+          lhs, rhs, valueIdent, keyIdent;
           if (!match) {
             throw Error("Expected datarows in form of '_item_ in _collection_' but got '" +
               expression + "'.");
@@ -32,12 +32,12 @@ angular.module('StarcounterLib', [])
 
           $(element).find('datacolumn').each(function (index) {
             var $this = $(this)
-              , pattern = new RegExp("^(" + lhs + "\\.)")
-              , value = $this.attr('value').replace(pattern, '')
-              , title = $this.attr('title')
-              , type = scope.$eval($this.attr('type'))
-              , options = $this.attr('options')
-              , tmp;
+            , pattern = new RegExp("^(" + lhs + "\\.)")
+            , value = $this.attr('value').replace(pattern, '')
+            , title = $this.attr('title')
+            , type = scope.$eval($this.attr('type'))
+            , options = $this.attr('options')
+            , tmp;
 
             var column = scope.$eval(options) || {};
             column.data = value;
@@ -86,16 +86,18 @@ angular.module('StarcounterLib', [])
             columns.push(column);
           });
 
-          if (columns.length > 0) {
-            settings['columns'] = columns;
-            settings['startCols'] = columns.length;
-          }
+          if (typeof scope[rhs] !== 'undefined') {
+            settings['data'] = scope[rhs];
+            if(columns.length > 0) {
+              settings['columns'] = columns;
+              settings['startCols'] = columns.length;
+            }        
+          } 
 
           if (colHeaders.length > 0) {
             settings['colHeaders'] = colHeaders;
           }
-
-          settings['data'] = scope[rhs];
+          
           $container.handsontable(settings);
 
           $container.on('datachange.handsontable', function (event, changes, source) {
@@ -112,6 +114,13 @@ angular.module('StarcounterLib', [])
           });
 
           scope.$watch('dataChange', function (value) {
+            if(scope[rhs] !== $container.handsontable('getData') && columns.length > 0) {
+              var update = {
+                columns: columns,
+                startCols: columns.length
+              }
+              $container.handsontable("updateSettings", update);
+            }
             $container.handsontable("loadData", scope[rhs]);
           });
         }
