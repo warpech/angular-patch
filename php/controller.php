@@ -22,9 +22,9 @@ else {
 }
 
 
-$tplPath = "html/{$appName}.html";
-$jsonPath = "php/app/{$appName}.json";
-$appPath = "php/app/{$appName}.php";
+$tplPath = "app/{$appName}.html";
+$jsonPath = "app/{$appName}.json";
+$appPath = "app/{$appName}.php";
 
 if (!(preg_match('/^[a-zA-Z0-9_]+$/', $appName) && file_exists($tplPath) && file_exists($jsonPath) && file_exists($appPath))) {
   include "html/404.html";
