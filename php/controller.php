@@ -21,6 +21,7 @@ else {
   $appName = substr(strrchr($path, '/'), 1); //get everything after last slash (/test => test)
 }
 
+
 $tplPath = "html/{$appName}.html";
 $jsonPath = "php/app/{$appName}.json";
 $appPath = "php/app/{$appName}.php";
