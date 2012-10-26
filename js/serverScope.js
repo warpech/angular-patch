@@ -104,6 +104,20 @@ angular.module('StarcounterLib', ['panelApp'])
         }
 
         return function postLink(scope, element, attrs, controller) {
+          // Check if we should load local json file as a scope
+          if (attrs.serverScope) {
+            // Load local file
+            $http.get(attrs.serverScope).success(function (data, status, headers, config) {
+              // json file loaded
+              console.log("NOTICE: Local scope was loaded (" + attrs.serverScope + ")");
+              // apply loaded data to scope
+              overwriteRoot(scope, data);
+            }).error(function (data, status, headers, config) {
+              console.log("ERROR: Loading "+attrs.serverScope+" ("+status+")");
+            });
+            return;
+          }
+
           if (typeof window.__elim_rq !== 'undefined') {
             overwriteRoot(scope, window.__elim_rq);
             rootLoaded = true;
