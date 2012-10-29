@@ -63,27 +63,14 @@ angular.module('StarcounterLib', ['panelApp'])
         function findAndSetWatchers(scope) {
           var tree = appContext.getScopeTree(scope);
           var watched = [];
-
-          function findWatchedRecursive(watched, obj, parent) {
-            parent = parent || '';
-            for (var i in obj) {
-              if (i == "View-Model") continue;
-
-              if (obj.hasOwnProperty(i)) {
-                if (Object.prototype.toString.apply(obj[i]) === '[object Object]') {
-                  findWatchedRecursive(watched, obj[i], parent + i + '.');
-                }
-                else if (Object.prototype.toString.apply(obj[i]) === '[object Array]') {
-                  findWatchedRecursive(watched, obj[i], parent + i + '.');
-                }
-                else if (typeof obj[i] !== "function") {
-                  watched.push(parent + i);
-                }
-              }
+          for (var i in tree.locals) {
+            if (i == "View-Model") {
+              continue;
+            }
+            if (tree.locals.hasOwnProperty(i)) {
+              watched.push(i);
             }
           }
-
-          findWatchedRecursive(watched, tree.locals);
           setWatchers(scope, watched);
         }
 
