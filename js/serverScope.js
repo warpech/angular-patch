@@ -46,15 +46,11 @@ angular.module('StarcounterLib', ['panelApp'])
           });
         }
 
-        function updateServer(scope, path, value) {
-          var data = {
-            "replace": path,
-            "value": value
-          };
+        function updateServer(scope, update) {
           $http({
             method: 'PATCH', 
             url: getRequestUrl(scope), 
-            data: data
+            data: update
           }).success(function (data, status, headers, config) {
             patchRoot(scope, data);
           });
@@ -85,7 +81,23 @@ angular.module('StarcounterLib', ['panelApp'])
                   if (current === previous) {
                     return;
                   }
-                  updateServer(scope, '/' + prop.replace(/\./g, '/'), current);
+                  var update = [];
+                  if(scope[prop + '_deepChangeInfo']) {
+                    for(var i=0, ilen=scope[prop + '_deepChangeInfo'].length; i<ilen; i++) {
+                      update.push({
+                        "replace": '/' + prop.replace(/\./g, '/') + '/' + scope[prop + '_deepChangeInfo'][i][0] + '/' + scope[prop + '_deepChangeInfo'][i][1].replace(/\./g, '/'),
+                        "value": scope[prop + '_deepChangeInfo'][i][3]
+                      });
+                    }
+                    scope[prop + '_deepChangeInfo'] = null;
+                  }
+                  else {
+                    update.push({
+                      "replace": '/' + prop.replace(/\./g, '/'),
+                      "value": current
+                    });
+                  }
+                  updateServer(scope, update);
                 }
               })
             })(props[i]), true);

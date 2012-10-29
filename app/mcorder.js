@@ -6,6 +6,9 @@ function MyCtrl($scope, $http, $location) {
   }
   
   $scope.triggerNull = function(path) {
-    window.updateServer($scope, path, null);
+    window.updateServer($scope, [{
+      "replace": path, 
+      value: null
+    }]);
   }
 }
