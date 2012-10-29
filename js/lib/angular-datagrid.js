@@ -1,3 +1,6 @@
+/**
+ * https://github.com/warpech/angular-ui-handsontable
+ */
 angular.module('ui.directives', [])
   .directive('uiDatagrid', function () {
     var directiveDefinitionObject = {
@@ -16,7 +19,7 @@ angular.module('ui.directives', [])
         return function postLink(scope, element, attrs, controller) {
           var expression = attrs.datarows;
           var match = expression.match(/^\s*(.+)\s+in\s+(.*)\s*$/),
-          lhs, rhs, valueIdent, keyIdent;
+            lhs, rhs, valueIdent, keyIdent;
           if (!match) {
             throw Error("Expected datarows in form of '_item_ in _collection_' but got '" +
               expression + "'.");
@@ -32,19 +35,19 @@ angular.module('ui.directives', [])
 
           $(element).find('datacolumn').each(function (index) {
             var $this = $(this)
-            , pattern = new RegExp("^(" + lhs + "\\.)")
-            , value = $this.attr('value').replace(pattern, '')
-            , title = $this.attr('title')
-            , type = scope.$eval($this.attr('type'))
-            , options = $this.attr('options')
-            , tmp;
+              , pattern = new RegExp("^(" + lhs + "\\.)")
+              , value = $this.attr('value').replace(pattern, '')
+              , title = $this.attr('title')
+              , type = scope.$eval($this.attr('type'))
+              , options = $this.attr('options')
+              , tmp;
 
             var column = scope.$eval(options) || {};
             column.data = value;
 
             colHeaders.push(title);
 
-            switch(type) {
+            switch (type) {
               case 'autocomplete':
                 settings['autoComplete'].push({
                   match: function (row, col) {
@@ -64,22 +67,22 @@ angular.module('ui.directives', [])
               case 'checkbox':
                 column.type = Handsontable.CheckboxCell;
                 tmp = $this.attr('checkedTemplate');
-                if(typeof tmp !== 'undefined') {
+                if (typeof tmp !== 'undefined') {
                   column.checkedTemplate = scope.$eval(tmp); //if undefined then defaults to Boolean true
                 }
                 tmp = $this.attr('uncheckedTemplate');
-                if(typeof tmp !== 'undefined') {
+                if (typeof tmp !== 'undefined') {
                   column.uncheckedTemplate = scope.$eval(tmp); //if undefined then defaults to Boolean true
                 }
                 break;
 
               default:
-                if(typeof type === 'object') {
+                if (typeof type === 'object') {
                   column.type = type;
                 }
             }
 
-            if($this.attr('readOnly')) {
+            if ($this.attr('readOnly')) {
               column.readOnly = true;
             }
 
@@ -88,41 +91,38 @@ angular.module('ui.directives', [])
 
           if (typeof scope[rhs] !== 'undefined') {
             settings['data'] = scope[rhs];
-            if(columns.length > 0) {
+            if (columns.length > 0) {
               settings['columns'] = columns;
               settings['startCols'] = columns.length;
-            }        
-          } 
+            }
+          }
 
           if (colHeaders.length > 0) {
             settings['colHeaders'] = colHeaders;
           }
-          
+
           $container.handsontable(settings);
 
           $container.on('datachange.handsontable', function (event, changes, source) {
-            if (source === 'loadData') {
-              return;
+            if (!scope.$$phase) { //if digest is not in progress
+              scope.$digest(); //programmatic change does not trigger digest in AnuglarJS so we need to trigger it automatically
             }
-            scope.$apply(function () {
-              scope.dataChange = !scope.dataChange;
-            });
           });
 
           $container.on('selectionbyprop.handsontable', function (event, r, p, r2, p2) {
             scope.$emit('datagridSelection', $container, r, p, r2, p2);
           });
 
-          scope.$watch('dataChange', function (value) {
-            if(scope[rhs] !== $container.handsontable('getData') && columns.length > 0) {
+          scope.$watch(rhs, function (value) {
+            $container.handsontable("loadData", scope[rhs]);
+            if (scope[rhs] !== $container.handsontable('getData') && columns.length > 0) {
               var update = {
                 columns: columns,
                 startCols: columns.length
               }
               $container.handsontable("updateSettings", update);
             }
-            $container.handsontable("loadData", scope[rhs]);
-          });
+          }, true);
         }
       }
     };
