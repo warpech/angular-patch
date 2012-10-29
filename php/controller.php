@@ -73,6 +73,9 @@ else if ($accept == 'json' && $method == 'PATCH') {
         unset($patchInput[$key]);
       }
     }
+    if(isset($patchInput[0]) && $patchInput[0]['replace'] === '/AddRow$' && $patchInput[0]['value'] === null) {
+      $addRowRequest = true;
+    }
     $_SESSION['data'] = @JsonPatch::patch($_SESSION['data'], $patchInput);
   }
   catch (Exception $e) {

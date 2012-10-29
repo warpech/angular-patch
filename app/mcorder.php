@@ -7,11 +7,11 @@ function applicationStart() {
 }
 
 function applicationLogic() {
-  if (getProp('AddRow$') === true) {
+  global $addRowRequest;
+  if (!empty($addRowRequest)) {
     $items = getProp('Items');
     array_push($items, getProductSchema()); //add empty row to the table
     setProp('Items', $items);
-    setProp('AddRow$', false);
   }
 
   $count = 0;

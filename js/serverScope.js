@@ -60,6 +60,8 @@ angular.module('StarcounterLib', ['panelApp'])
           });
         }
         
+        window.updateServer = updateServer;
+        
         function findAndSetWatchers(scope) {
           var tree = appContext.getScopeTree(scope);
           var watched = [];
