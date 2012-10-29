@@ -1,5 +1,6 @@
 <?php
 
+require 'php/lib/FirePHPCore/FirePHP.class.php';
 session_start();
 
 $path = $_SERVER['PATH_INFO'];
@@ -33,7 +34,7 @@ if (!(preg_match('/^[a-zA-Z0-9_]+$/', $appName) && file_exists($tplPath) && file
 
 $injectEliminateRequest = true;
 
-include "php/session.php";
+include 'php/session.php';
 include $appPath;
 
 $patchOutput = array();
