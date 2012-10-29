@@ -14,7 +14,6 @@
     <script src="../js/lib/handsontable/lib/jquery.min.js"></script>
     <script src="../js/lib/handsontable/jquery.handsontable.js"></script>
     <script src="../js/lib/handsontable/lib/bootstrap-typeahead.js"></script>
-    <script src="../js/lib/handsontable/lib/jquery.autoresize.js"></script>
     <script src="../js/lib/handsontable/lib/jQuery-contextMenu/jquery.contextMenu.js"></script>
     <script src="../js/lib/handsontable/lib/jQuery-contextMenu/jquery.ui.position.js"></script>
     <link rel="stylesheet" media="screen" href="../js/lib/handsontable/lib/jQuery-contextMenu/jquery.contextMenu.css">
@@ -36,12 +35,15 @@
 
     <button ng-click="dumpItems()">Dump object to console</button>
 
-    <h2>Order no {{OrderNo}} ({{Items.length}} items)</h2>
+    <h2>Order no {{OrderNo}}</h2>
+    <h3>{{Items.length}} items &ndash; total quantity: {{TotalQuantity}}</h3>
 
     <div ui-datagrid datarows="item in Items">
       <datacolumn value="item.Product._Search$" title="Product"/>
       <datacolumn value="item.Quantity$" title="Quantity"/>
     </div>
+
+    <button ng-click="AddRow$ = true">Add row</button>
 
   </body>
 </html>

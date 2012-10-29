@@ -18,7 +18,9 @@
     },
     "Quantity$":5
   }],
+  "TotalQuantity": null,
   "Total": 50.00,
   "Save$": null,
-  "Cancel$": null
+  "Cancel$": null,
+  "AddRow$": null
 }
