@@ -71,6 +71,58 @@ angular.module('StarcounterLib', ['panelApp'])
           }
           setWatchers(scope, watched);
         }
+        
+        function diffToPatch(obj, path, patch) {
+          var path = path || '';
+          var patch = patch || [];  
+        
+          if (typeof path !== '' && typeof obj == 'object') {
+            if ($.isArray(obj)) {
+              // changed value
+              if (obj.length < 3) {
+                patch.push({
+                  replace: path, 
+                  value:obj[obj.length - 1]
+                });
+              }
+              else {
+                if (obj[2] == 0) {
+                  patch.push({
+                    remove: path
+                  });
+                }
+                else 
+                if (obj[2] == 2) {
+                  // text diff
+                  throw new Error("text diff not implemented")
+                }
+                else {
+                  throw new Error("invalid diff type");
+                }
+              }
+            }
+            else {
+              var p;
+              if (obj._t == 'a') {
+                // array diff
+                for (p in obj) {
+                  if (p !== '_t' && obj.hasOwnProperty(p)) {
+                    diffToPatch(obj[p], path + '/' + p, patch);
+                  }
+                }
+              }
+              else {
+                // object diff
+                for (p in obj) {
+                  if (obj.hasOwnProperty(p)) {
+                    diffToPatch(obj[p], path + '/' + p, patch);
+                  }
+                }
+              }
+            }
+          }
+          return patch;
+        }
 
         function setWatchers(scope, props) {
           for (var i = 0, ilen = props.length; i < ilen; i++) {
@@ -81,23 +133,16 @@ angular.module('StarcounterLib', ['panelApp'])
                   if (current === previous) {
                     return;
                   }
-                  var update = [];
-                  if(scope[prop + '_deepChangeInfo']) {
-                    for(var i=0, ilen=scope[prop + '_deepChangeInfo'].length; i<ilen; i++) {
-                      update.push({
-                        "replace": '/' + prop.replace(/\./g, '/') + '/' + scope[prop + '_deepChangeInfo'][i][0] + '/' + scope[prop + '_deepChangeInfo'][i][1].replace(/\./g, '/'),
-                        "value": scope[prop + '_deepChangeInfo'][i][3]
-                      });
-                    }
-                    scope[prop + '_deepChangeInfo'] = null;
+                  var jsonPointer = '/' + prop.replace(/\./g, '/');
+                  if($.isArray(current)) {
+                    updateServer(scope, diffToPatch(jsondiffpatch.diff(previous, current), jsonPointer));
                   }
                   else {
-                    update.push({
-                      "replace": '/' + prop.replace(/\./g, '/'),
+                    updateServer(scope, [{
+                      "replace": jsonPointer,
                       "value": current
-                    });
+                    }]);
                   }
-                  updateServer(scope, update);
                 }
               })
             })(props[i]), true);

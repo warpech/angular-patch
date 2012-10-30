@@ -131,9 +131,6 @@ angular.module('ui.directives', [])
           $container.handsontable(settings);
 
           $container.on('datachange.handsontable', function (event, changes, source) {
-            if (source !== 'loadData') {
-              scope[rhs + '_deepChangeInfo'] = changes;
-            }
             if (!scope.$$phase) { //if digest is not in progress
               scope.$digest(); //programmatic change does not trigger digest in AnuglarJS so we need to trigger it automatically
             }

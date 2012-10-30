@@ -20,6 +20,7 @@
     <link rel="stylesheet" media="screen" href="../js/lib/handsontable/jquery.handsontable.css">
 
     <script src="../js/lib/jsonpatch.js"></script>
+    <script src="../js/lib/jsondiffpatch.js"></script>
     <script src="../js/lib/appContext.js"></script>
     <script src="../js/serverScope.js"></script>
     <script src="../app/mcorder.js"></script>
@@ -34,7 +35,7 @@
     <p>The session is restarted when you refresh the window. Random name is generated on session start</p>
 
     <button ng-click="dumpItems()">Dump object to console</button>
-
+    
     <h2>Order no {{OrderNo}}</h2>
     <h3>{{Items.length}} items &ndash; total quantity: {{TotalQuantity}}</h3>
 
