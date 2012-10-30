@@ -19,7 +19,7 @@ angular.module('ui.directives', [])
         return function postLink(scope, element, attrs, controller) {
           var expression = attrs.datarows;
           var match = expression.match(/^\s*(.+)\s+in\s+(.*)\s*$/),
-          lhs, rhs, valueIdent, keyIdent;
+            lhs, rhs, valueIdent, keyIdent;
           if (!match) {
             throw Error("Expected datarows in form of '_item_ in _collection_' but got '" +
               expression + "'.");
@@ -35,19 +35,20 @@ angular.module('ui.directives', [])
 
           $(element).find('datacolumn').each(function (index) {
             var $this = $(this)
-            , pattern = new RegExp("^(" + lhs + "\\.)")
-            , value = $this.attr('value').replace(pattern, '')
-            , title = $this.attr('title')
-            , type = scope.$eval($this.attr('type'))
-            , options = $this.attr('options')
-            , tmp;
+              , pattern = new RegExp("^(" + lhs + "\\.)")
+              , value = $this.attr('value').replace(pattern, '')
+              , title = $this.attr('title')
+              , type = scope.$eval($this.attr('type'))
+              , options = $this.attr('options')
+              , tmp;
 
             var column = scope.$eval(options) || {};
             column.data = value;
 
             colHeaders.push(title);
-            
-            var deregister;
+
+            var deregister
+              , deinterval;
 
             switch (type) {
               case 'autocomplete':
@@ -59,21 +60,26 @@ angular.module('ui.directives', [])
                   },
                   source: function (row, col) {
                     var fn;
-                    if(deregister) {
+                    if (deregister) {
                       deregister();
+                      clearInterval(deinterval);
                     }
                     var parsed;
-                    deregister = scope.$watch('Items['+row+'].Product._Options',function(oldVal, newVal){
-                      var childScope = scope.$new();
+                    var childScope = scope.$new();
+                    childScope.item = $container.data('handsontable').getData()[row];
+                    deinterval = setInterval(function () {
                       childScope.item = $container.data('handsontable').getData()[row];
-                      parsed = childScope.$eval(options);
-                      if(fn) {
+                      childScope.$digest();
+                    }, 100);
+                    deregister = childScope.$watch(options, function (oldVal, newVal) {
+                      parsed = childScope.$eval(options)
+                      if (fn) {
                         fn(parsed);
                       }
                     }, true);
                     return function (query, process) {
                       fn = process;
-                      if(parsed){
+                      if (parsed) {
                         fn(parsed);
                       }
                     }
@@ -146,7 +152,7 @@ angular.module('ui.directives', [])
               });
             }
             else {
-              $container.handsontable('render');
+              $container.handsontable('loadData', scope[rhs]);
             }
           }, true);
         }
