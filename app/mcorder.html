@@ -39,7 +39,7 @@
     <h3>{{Items.length}} items &ndash; total quantity: {{TotalQuantity}}</h3>
 
     <div ui-datagrid datarows="item in Items">
-      <datacolumn value="item.Product._Search$" title="Product"/>
+      <datacolumn type="'autocomplete'" live options="getOptions(item.Product._Options)" value="item.Product._Search$" title="Product"/>
       <datacolumn value="item.Quantity$" title="Quantity"/>
     </div>
 

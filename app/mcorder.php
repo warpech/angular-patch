@@ -1,16 +1,50 @@
 <?php
 
+$products = array('Big Mac', 'Big Mac & Co', 'McRoyal', 'McRoyal with Cheese', 'FishMac', 'Cheeseburger', 'Double Cheeseburger', 'Hamburger', 'McCountry', 'McChicken');
+
 function applicationStart() {
   $items = getProp('Items');
   array_push($items, getProductSchema()); //add empty row to the table
   setProp('Items', $items);
 }
 
+function patchMentions($key) {
+  global $patchInput;
+  if (!empty($patchInput)) {
+    foreach ($patchInput as $update) {
+      if (strpos($update['replace'], $key) === 0) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 function applicationLogic() {
-  global $addRowRequest;
-  if (!empty($addRowRequest)) {
+  global $products;
+
+  if (patchMentions('/AddRow$')) {
     $items = getProp('Items');
     array_push($items, getProductSchema()); //add empty row to the table
+    setProp('Items', $items);
+  }
+
+  if (patchMentions('/Items')) {
+    $items = getProp('Items');
+    foreach ($items as $key => $item) {
+      if (!empty($item['Product']['_Search$'])) {
+        $items[$key]['Product']['_Options'] = array();
+        foreach ($products as $product) {
+          if (strpos(strtolower($product), strtolower($item['Product']['_Search$'])) !== false) {
+            array_push($items[$key]['Product']['_Options'], array(
+                'Description' => $product,
+                'Image' => '',
+                'Pick$' => null
+            ));
+          }
+        }
+      }
+    }
     setProp('Items', $items);
   }
 

@@ -52,6 +52,7 @@ angular.module('StarcounterLib', ['panelApp'])
             url: getRequestUrl(scope), 
             data: update
           }).success(function (data, status, headers, config) {
+            console.log("odp");
             patchRoot(scope, data);
           });
         }

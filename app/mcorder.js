@@ -11,4 +11,14 @@ function MyCtrl($scope, $http, $location) {
       value: null
     }]);
   }
+
+  $scope.getOptions = function (options) {
+    var out = [];
+    if (options !== null && typeof options === 'object' && options.length) {
+      for (var i = 0, ilen = options.length; i < ilen; i++) {
+        out.push(options[i].Description);
+      }
+    }
+    return out;
+  };
 }

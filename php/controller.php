@@ -22,7 +22,6 @@ else {
   $appName = substr(strrchr($path, '/'), 1); //get everything after last slash (/test => test)
 }
 
-
 $tplPath = "app/{$appName}.html";
 $jsonPath = "app/{$appName}.json";
 $appPath = "app/{$appName}.php";
@@ -72,9 +71,6 @@ else if ($accept == 'json' && $method == 'PATCH') {
       if ($patchInput[$key]['replace'] === '/View-Model') {
         unset($patchInput[$key]);
       }
-    }
-    if(isset($patchInput[0]) && $patchInput[0]['replace'] === '/AddRow$' && $patchInput[0]['value'] === null) {
-      $addRowRequest = true;
     }
     $_SESSION['data'] = @JsonPatch::patch($_SESSION['data'], $patchInput);
   }
