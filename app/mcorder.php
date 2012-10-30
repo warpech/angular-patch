@@ -12,7 +12,7 @@ function patchMentions($key) {
   global $patchInput;
   if (!empty($patchInput)) {
     foreach ($patchInput as $update) {
-      if (strpos($update['replace'], $key) === 0) {
+      if (!empty($update['replace']) && strpos($update['replace'], $key) === 0) {
         return true;
       }
     }
