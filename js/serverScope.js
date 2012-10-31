@@ -4,11 +4,13 @@ angular.module('StarcounterLib', ['panelApp'])
       restrict: 'A',
       compile: function compile(tElement, tAttrs, transclude) {
 
+        var remoteScope = {};
         var rootLoaded = false;
 
         function overwriteRoot(scope, data) {
+          remoteScope = angular.copy(data); //remote is current state of data on server
           for (var i in data) {
-            if (data.hasOwnProperty(i)) {
+            if (data.hasOwnProperty(i)) {              
               scope[i] = data[i];
             }
           }
@@ -17,7 +19,7 @@ angular.module('StarcounterLib', ['panelApp'])
 
         function patchRoot(scope, patch) {
           if (patch.length) {
-            console.log("patch", patch);
+            jsonpatch.apply(remoteScope, angular.copy(patch)); //remote is current state of data on server
             jsonpatch.apply(scope, patch);
           }
         }
@@ -38,26 +40,26 @@ angular.module('StarcounterLib', ['panelApp'])
 
         function getRoot(scope) {
           $http({
-            method: 'GET', 
+            method: 'GET',
             url: getRequestUrl(scope)
           }).success(function (data, status, headers, config) {
-            overwriteRoot(scope, data);
+            overwriteRoot(scope, data);            
             rootLoaded = true;
           });
         }
 
         function updateServer(scope, update) {
           $http({
-            method: 'PATCH', 
-            url: getRequestUrl(scope), 
+            method: 'PATCH',
+            url: getRequestUrl(scope),
             data: update
           }).success(function (data, status, headers, config) {
             patchRoot(scope, data);
           });
         }
-        
+
         window.updateServer = updateServer;
-        
+
         function findAndSetWatchers(scope) {
           var tree = appContext.getScopeTree(scope);
           var watched = [];
@@ -71,18 +73,18 @@ angular.module('StarcounterLib', ['panelApp'])
           }
           setWatchers(scope, watched);
         }
-        
+
         function diffToPatch(obj, path, patch) {
           var path = path || '';
-          var patch = patch || [];  
-        
+          var patch = patch || [];
+
           if (typeof path !== '' && typeof obj == 'object') {
-            if ($.isArray(obj)) {
+            if (angular.isArray(obj)) {
               // changed value
               if (obj.length < 3) {
                 patch.push({
-                  replace: path, 
-                  value:obj[obj.length - 1]
+                  replace: path,
+                  value: obj[obj.length - 1]
                 });
               }
               else {
@@ -91,8 +93,7 @@ angular.module('StarcounterLib', ['panelApp'])
                     remove: path
                   });
                 }
-                else 
-                if (obj[2] == 2) {
+                else if (obj[2] == 2) {
                   // text diff
                   throw new Error("text diff not implemented")
                 }
@@ -134,14 +135,9 @@ angular.module('StarcounterLib', ['panelApp'])
                     return;
                   }
                   var jsonPointer = '/' + prop.replace(/\./g, '/');
-                  if($.isArray(current)) {
-                    updateServer(scope, diffToPatch(jsondiffpatch.diff(previous, current), jsonPointer));
-                  }
-                  else {
-                    updateServer(scope, [{
-                      "replace": jsonPointer,
-                      "value": current
-                    }]);
+                  var patch = diffToPatch(jsondiffpatch.diff(remoteScope[prop], current), jsonPointer);
+                  if(patch.length) {
+                    updateServer(scope, patch);
                   }
                 }
               })
@@ -158,8 +154,9 @@ angular.module('StarcounterLib', ['panelApp'])
               console.log("NOTICE: Local scope was loaded (" + attrs.serverScope + ")");
               // apply loaded data to scope
               overwriteRoot(scope, data);
+              rootLoaded = true;
             }).error(function (data, status, headers, config) {
-              console.log("ERROR: Loading "+attrs.serverScope+" ("+status+")");
+              console.log("ERROR: Loading " + attrs.serverScope + " (" + status + ")");
             });
             return;
           }
