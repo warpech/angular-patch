@@ -136,6 +136,25 @@ angular.module('StarcounterLib', ['panelApp'])
                   }
                   var jsonPointer = '/' + prop.replace(/\./g, '/');
                   var patch = diffToPatch(jsondiffpatch.diff(remoteScope[prop], current), jsonPointer);
+                  
+                  for(var i= 0, ilen=patch.length; i<ilen; i++) {
+                    if(typeof patch[i].replace !== 'undefined' && patch[i].replace.charAt(patch[i].replace.length - 1) === '$') {
+                      /*
+                      If value of a property ending with $ was changed to string '$$null', it means that we want to send real null 
+                      to server and keep null as the value in client side.
+                      This is a workaround to null -> null changes being not detected by watch mechanism.
+                      Null is used as button trigger in Starcounter.
+                      */
+                      if(patch[i].value === '$$null') {
+                        patch[i].value = null; //revert the change to null in JSON Patch
+                        jsonpatch.apply(scope, [{ //revert the change to null in current scope
+                          replace: patch[i].replace,
+                          value: null 
+                        }]);
+                      }
+                    }
+                  }
+                  
                   if(patch.length) {
                     updateServer(scope, patch);
                   }
