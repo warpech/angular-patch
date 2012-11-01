@@ -19,7 +19,7 @@ angular.module('ui.directives', [])
         return function postLink(scope, element, attrs, controller) {
           var expression = attrs.datarows;
           var match = expression.match(/^\s*(.+)\s+in\s+(.*)\s*$/),
-            lhs, rhs, valueIdent, keyIdent;
+          lhs, rhs, valueIdent, keyIdent;
           if (!match) {
             throw Error("Expected datarows in form of '_item_ in _collection_' but got '" +
               expression + "'.");
@@ -35,12 +35,14 @@ angular.module('ui.directives', [])
 
           $(element).find('datacolumn').each(function (index) {
             var $this = $(this)
-              , pattern = new RegExp("^(" + lhs + "\\.)")
-              , value = $this.attr('value').replace(pattern, '')
-              , title = $this.attr('title')
-              , type = scope.$eval($this.attr('type'))
-              , options = $this.attr('options')
-              , tmp;
+            , pattern = new RegExp("^(" + lhs + "\\.)")
+            , value = $this.attr('value').replace(pattern, '')
+            , title = $this.attr('title')
+            , type = scope.$eval($this.attr('type'))
+            , options = $this.attr('options')
+            , tmp;
+              
+            var childScope = scope.$new();
 
             var column = scope.$eval(options) || {};
             column.data = value;
@@ -48,7 +50,7 @@ angular.module('ui.directives', [])
             colHeaders.push(title);
 
             var deregister
-              , deinterval;
+            , deinterval;
 
             switch (type) {
               case 'autocomplete':
@@ -65,8 +67,8 @@ angular.module('ui.directives', [])
                       clearInterval(deinterval);
                     }
                     var parsed;
-                    var childScope = scope.$new();
                     childScope.item = $container.data('handsontable').getData()[row];
+                    scope.currentRow = row;
                     deinterval = setInterval(function () {
                       childScope.item = $container.data('handsontable').getData()[row];
                       childScope.$digest();
@@ -111,6 +113,13 @@ angular.module('ui.directives', [])
 
             if (typeof $this.attr('live') !== 'undefined') {
               column.live = true;
+            }
+            
+            for (var attr, i=0, attrs=$this[0].attributes, ilen=attrs.length; i<ilen; i++){
+              attr = attrs.item(i)
+              if(typeof column[attr.nodeName] === 'undefined') {
+                column[attr.nodeName] = childScope.$eval(attr.nodeValue);
+              }
             }
 
             columns.push(column);

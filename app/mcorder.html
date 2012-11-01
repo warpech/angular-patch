@@ -35,12 +35,20 @@
     <p>The session is restarted when you refresh the window. Random name is generated on session start</p>
 
     <button ng-click="dumpItems()">Dump object to console</button>
-    
+
     <h2>Order no {{OrderNo}}</h2>
     <h3>{{Items.length}} items &ndash; total quantity: {{TotalQuantity}}</h3>
 
     <div ui-datagrid datarows="item in Items">
-      <datacolumn type="'autocomplete'" live options="getOptions(item.Product._Options)" value="item.Product._Search$" title="Product"/>
+      <datacolumn type="'autocomplete'" 
+                  options="item.Product._Options" 
+                  lookup="autocompleteLookup" 
+                  render="autocompleteRender" 
+                  sorter="autocompleteSorter" 
+                  highlighter="autocompleteHighlighter" 
+                  select="autocompleteSelect" 
+                  value="item.Product._Search$" 
+                  title="Product"/>
       <datacolumn value="item.Quantity$" title="Quantity"/>
     </div>
 

@@ -21,7 +21,8 @@ function patchMentions($key) {
 }
 
 function applicationLogic() {
-  global $products;
+  global $products, $patchInput;
+  $firephp = FirePHP::getInstance(true);
 
   if (patchMentions('/AddRow$')) {
     $items = getProp('Items');
@@ -31,6 +32,19 @@ function applicationLogic() {
 
   if (patchMentions('/Items')) {
     $items = getProp('Items');
+
+    foreach ($patchInput as $update) {
+      if (!empty($update['replace'])) {
+        $split = explode('/', $update['replace']);
+        if ($split[count($split) - 1] === 'Pick$') {
+          $optionId = (int) $split[count($split) - 2];
+          $itemId = (int) $split[count($split) - 5];
+          $items[$itemId]['Product']['_Search$'] = $items[$itemId]['Product']['_Options'][$optionId]['Description'];
+          $firephp->log($items[$itemId]['Product']['_Search$'], 'search');
+        }
+      }
+    }
+
     foreach ($items as $key => $item) {
       if (!empty($item['Product']['_Search$'])) {
         $items[$key]['Product']['_Options'] = array();
@@ -53,7 +67,6 @@ function applicationLogic() {
     $count += (int) $item['Quantity$'];
   }
   setProp('TotalQuantity', $count);
-  $firephp = FirePHP::getInstance(true);
   $firephp->log(getProp('Items'), 'php items');
 }
 

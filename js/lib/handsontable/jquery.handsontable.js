@@ -3835,6 +3835,13 @@ Handsontable.AutocompleteEditor = function (instance, td, row, col, prop, keyboa
     instance.setDataAtCell(row, prop, typeahead.updater(val));
     return this.hide();
   };
+  
+  /* overwrite typeahead methods (matcher, sorter, highlighter, updater, etc) if provided in cellProperties */
+  for(var i in cellProperties) {
+    if((typeahead.hasOwnProperty(i) || i === 'render') && i !== 'options') {
+      typeahead[i] = cellProperties[i];
+    }
+  }
 
   keyboardProxy.on("keydown.editor", function (event) {
     switch (event.keyCode) {
