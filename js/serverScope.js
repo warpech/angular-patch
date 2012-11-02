@@ -145,7 +145,7 @@ angular.module('StarcounterLib', ['panelApp'])
                       This is a workaround to null -> null changes being not detected by watch mechanism.
                       Null is used as button trigger in Starcounter.
                       */
-                      patch[i].value = false; //revert the change to null in JSON Patch
+                      patch[i].value = null; //revert the change to null in JSON Patch
                       jsonpatch.apply(scope, [{ //revert the change to null in current scope
                         replace: patch[i].replace,
                         value: null 
