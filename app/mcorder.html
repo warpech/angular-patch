@@ -41,11 +41,8 @@
 
     <div ui-datagrid datarows="item in Items">
       <datacolumn type="'autocomplete'" 
-                  options="item.Product._Options" 
+                  options="getOptions(item.Product._Options)" 
                   lookup="autocompleteLookup" 
-                  render="autocompleteRender" 
-                  sorter="autocompleteSorter" 
-                  highlighter="autocompleteHighlighter" 
                   select="autocompleteSelect" 
                   value="item.Product._Search$" 
                   title="Product"/>

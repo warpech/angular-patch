@@ -1294,9 +1294,9 @@ Handsontable.Core = function (rootElement, settings) {
     /**
      * Destroy current editor, if exists
      */
-    destroy: function () {
+    destroy: function (isCancelled) {
       if (typeof priv.editorDestroyer === "function") {
-        priv.editorDestroyer();
+        priv.editorDestroyer(isCancelled);
         priv.editorDestroyer = null;
       }
     },
@@ -1442,6 +1442,10 @@ Handsontable.Core = function (rootElement, settings) {
     }
     return td;
   };
+  
+  this.destroyEditor = function(isCancelled) {
+    editproxy.destroy(isCancelled);
+  }
 
   /**
    * Populate cells at position with 2d array
@@ -3793,7 +3797,10 @@ Handsontable.AutocompleteEditor = function (instance, td, row, col, prop, keyboa
     keyboardProxy.typeahead();
     typeahead = keyboardProxy.data('typeahead');
   }
-
+  else {
+    typeahead.listen(); //add typeahead bindings
+  }
+  
   typeahead.minLength = 0;
   typeahead.source = cellProperties.autoComplete.source(row, col);
   typeahead.highlighter = cellProperties.autoComplete.highlighter || defaultAutoCompleteHighlighter;
@@ -3900,7 +3907,7 @@ Handsontable.AutocompleteEditor = function (instance, td, row, col, prop, keyboa
 
   var destroyer = function (isCancelled) {
     textDestroyer(isCancelled);
-    typeahead.source = [];
+    keyboardProxy.off(); //remove typeahead bindings
     dontHide = false;
     if (isAutoComplete(keyboardProxy)) {
       isAutoComplete(keyboardProxy).hide();
