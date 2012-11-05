@@ -1,5 +1,5 @@
 /**
- * Handsontable 0.7.0-beta
+ * Handsontable 0.7.0
  * Handsontable is a simple jQuery plugin for editable tables with basic copy-paste compatibility with Excel and Google Docs
  *
  * Copyright 2012, Marcin Warpechowski
@@ -1189,13 +1189,12 @@ Handsontable.Core = function (rootElement, settings) {
               break;
 
             case 9: /* tab */
-              r = priv.settings.tabMoves.row;
-              c = priv.settings.tabMoves.col;
+              var tabMoves = typeof priv.settings.tabMoves === 'function' ? priv.settings.tabMoves(event) : priv.settings.tabMoves;
               if (event.shiftKey) {
-                selection.transformStart(-r, -c);
+                selection.transformStart(-tabMoves.row, -tabMoves.col);
               }
               else {
-                selection.transformStart(r, c);
+                selection.transformStart(tabMoves.row, tabMoves.col);
               }
               event.preventDefault();
               break;
@@ -1241,13 +1240,12 @@ Handsontable.Core = function (rootElement, settings) {
               break;
 
             case 13: /* return/enter */
-              r = priv.settings.enterMoves.row;
-              c = priv.settings.enterMoves.col;
+              var enterMoves = typeof priv.settings.enterMoves === 'function' ? priv.settings.enterMoves(event) : priv.settings.enterMoves;
               if (event.shiftKey) {
-                selection.transformStart(-r, -c); //move selection up
+                selection.transformStart(-enterMoves.row, -enterMoves.col); //move selection up
               }
               else {
-                selection.transformStart(r, c); //move selection down
+                selection.transformStart(enterMoves.row, enterMoves.col); //move selection down
               }
               event.preventDefault(); //don't add newline to field
               break;
@@ -1294,9 +1292,9 @@ Handsontable.Core = function (rootElement, settings) {
     /**
      * Destroy current editor, if exists
      */
-    destroy: function (isCancelled) {
+    destroy: function () {
       if (typeof priv.editorDestroyer === "function") {
-        priv.editorDestroyer(isCancelled);
+        priv.editorDestroyer();
         priv.editorDestroyer = null;
       }
     },
@@ -1344,6 +1342,32 @@ Handsontable.Core = function (rootElement, settings) {
 
   var bindEvents = function () {
     self.rootElement.on("beforedatachange.handsontable", function (event, changes) {
+      if (priv.settings.autoComplete) { //validate strict autocompletes
+        var typeahead = priv.editProxy.data('typeahead');
+        loop : for (var c = changes.length - 1; c >= 0; c--) {
+          for (var a = 0, alen = priv.settings.autoComplete.length; a < alen; a++) {
+            var autoComplete = priv.settings.autoComplete[a];
+            var source = autoComplete.source();
+            if (changes[c][3] && autoComplete.match(changes[c][0], changes[c][1], datamap.getAll)) {
+              var lowercaseVal = changes[c][3].toLowerCase();
+              for (var s = 0, slen = source.length; s < slen; s++) {
+                if (changes[c][3] === source[s]) {
+                  continue loop; //perfect match
+                }
+                else if (lowercaseVal === source[s].toLowerCase()) {
+                  changes[c][3] = source[s]; //good match, fix the case
+                  continue loop;
+                }
+              }
+              if (autoComplete.strict) {
+                changes.splice(c, 1); //no match, invalidate this change
+                continue loop;
+              }
+            }
+          }
+        }
+      }
+
       if (priv.settings.onBeforeChange) {
         var result = priv.settings.onBeforeChange.apply(self.rootElement[0], [changes]);
         if (result === false) {
@@ -1375,9 +1399,8 @@ Handsontable.Core = function (rootElement, settings) {
    * @param {Number} prop
    * @param {String} value
    * @param {String} [source='edit'] String that identifies how this change will be described in changes array (useful in onChange callback)
-   * @param {Boolean} [keepEditing=true] If set to true, editor will not be destroyed after data is set
    */
-  this.setDataAtCell = function (row, prop, value, source, keepEditing) {
+  this.setDataAtCell = function (row, prop, value, source) {
     var refreshRows = false, refreshCols = false, changes, i, ilen, td, changesByCol = [];
 
     if (typeof row === "object") { //is it an array of changes
@@ -1419,22 +1442,18 @@ Handsontable.Core = function (rootElement, settings) {
           refreshCols = true;
         }
       }
-      if (!keepEditing) {
-        td = self.view.render(row, col, prop, value);
-      }
+      td = self.view.render(row, col, prop, value);
       datamap.set(row, prop, value);
     }
-    if (!keepEditing) {
-      if (refreshRows) {
-        self.blockedCols.refresh();
-      }
-      if (refreshCols) {
-        self.blockedRows.refresh();
-      }
-      var recreated = grid.keepEmptyRows();
-      if (!recreated) {
-        selection.refreshBorders();
-      }
+    if (refreshRows) {
+      self.blockedCols.refresh();
+    }
+    if (refreshCols) {
+      self.blockedRows.refresh();
+    }
+    var recreated = grid.keepEmptyRows();
+    if (!recreated) {
+      selection.refreshBorders();
     }
     if (changes.length) {
       self.rootElement.triggerHandler("datachange.handsontable", [changes, source || 'edit']);
@@ -1442,8 +1461,8 @@ Handsontable.Core = function (rootElement, settings) {
     }
     return td;
   };
-  
-  this.destroyEditor = function(isCancelled) {
+
+  this.destroyEditor = function() {
     selection.refreshBorders(); //destroys editor and reselects the cell
   }
 
@@ -1518,7 +1537,7 @@ Handsontable.Core = function (rootElement, settings) {
     else {
       priv.dataType = 'array';
     }
-    if (data[0]) {
+    if(data[0]) {
       priv.duckDataSchema = datamap.recursiveDuckSchema(data[0]);
     }
     else {
@@ -3527,7 +3546,7 @@ var texteditor = {
    * Finishes text input in selected cells
    */
   finishEditing: function (instance, td, row, col, prop, keyboardProxy, isCancelled, ctrlDown) {
-    if (window.strictAutocomplete) {
+    if (texteditor.triggerOnlyByDestroyer) {
       return;
     }
     if (texteditor.isCellEdited) {
@@ -3576,6 +3595,7 @@ var texteditor = {
 Handsontable.TextEditor = function (instance, td, row, col, prop, keyboardProxy, cellProperties) {
   texteditor.isCellEdited = false;
   texteditor.originalValue = instance.getDataAtCell(row, prop);
+  texteditor.triggerOnlyByDestroyer = cellProperties.strict;
 
   var $current = $(td);
   var currentOffset = $current.offset();
@@ -3612,7 +3632,7 @@ Handsontable.TextEditor = function (instance, td, row, col, prop, keyboardProxy,
     width: 0,
     height: 0
   });
-  
+
   keyboardProxy.on("keydown.editor", function (event) {
     var ctrlDown = (event.ctrlKey || event.metaKey) && !event.altKey; //catch CTRL but not right ALT (which in some systems triggers ALT+CTRL)
     if (Handsontable.helper.isPrintableChar(event.keyCode)) {
@@ -3738,17 +3758,6 @@ Handsontable.TextEditor = function (instance, td, row, col, prop, keyboardProxy,
     }
   });
 
-  if (cellProperties.live) {
-    var oldVal = keyboardProxy.val();
-    var observeVal = setInterval(function () {
-      var newVal = keyboardProxy.val();
-      if (oldVal !== newVal) {
-        instance.setDataAtCell(row, prop, newVal, null, true);
-        oldVal = newVal;
-      }
-    }, 50);
-  }
-
   function onDblClick() {
     keyboardProxy[0].focus();
     texteditor.beginEditing(instance, td, row, col, prop, keyboardProxy, true);
@@ -3758,7 +3767,6 @@ Handsontable.TextEditor = function (instance, td, row, col, prop, keyboardProxy,
   instance.container.find('.htBorder.current').on('dblclick.editor', onDblClick);
 
   return function (isCancelled) {
-    clearTimeout(observeVal);
     texteditor.finishEditing(instance, td, row, col, prop, keyboardProxy, isCancelled);
   }
 };
@@ -3855,19 +3863,19 @@ Handsontable.AutocompleteEditor = function (instance, td, row, col, prop, keyboa
     }
   }
   
-  window.strictAutocomplete = !!cellProperties.strict;
-  
   keyboardProxy.on("keydown.editor", function (event) {
     switch (event.keyCode) {
       case 27: /* ESC */
         dontHide = false;
         break;
-
+        
+      case 37: /* arrow left */
+      case 39: /* arrow right */
       case 38: /* arrow up */
       case 40: /* arrow down */
       case 9: /* tab */
       case 13: /* return/enter */
-        if (isAutoComplete(keyboardProxy)) {
+        if (!keyboardProxy.parent().hasClass('htHidden')) {
           event.stopImmediatePropagation();
         }
         event.preventDefault();
@@ -3914,7 +3922,7 @@ Handsontable.AutocompleteEditor = function (instance, td, row, col, prop, keyboa
 
   var destroyer = function (isCancelled) {
     keyboardProxy.off(); //remove typeahead bindings
-    textDestroyer(isCancelled);   
+    textDestroyer(isCancelled);
     dontHide = false;
     if (isAutoComplete(keyboardProxy)) {
       isAutoComplete(keyboardProxy).hide();
