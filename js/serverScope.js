@@ -47,7 +47,7 @@ angular.module('StarcounterLib', ['panelApp'])
             rootLoaded = true;
           });
         }
-
+        
         function updateServer(scope, update) {
           $http({
             method: 'PATCH',
@@ -55,6 +55,9 @@ angular.module('StarcounterLib', ['panelApp'])
             data: update
           }).success(function (data, status, headers, config) {
             patchRoot(scope, data);
+            if(!scope.$$phase) { //digest not in progress
+              scope.$digest();                
+            }
           });
         }
 
@@ -145,10 +148,16 @@ angular.module('StarcounterLib', ['panelApp'])
                       This is a workaround to null -> null changes being not detected by watch mechanism.
                       Null is used as button trigger in Starcounter.
                       */
-                      patch[i].value = null; //revert the change to null in JSON Patch
-                      jsonpatch.apply(scope, [{ //revert the change to null in current scope
-                        replace: patch[i].replace,
-                        value: null 
+                      patch[i].value = null; //set the change to null in JSON Patch
+                      
+                      /* determine if original value was false or null */
+                      var test = jsonpatch.apply(remoteScope, [{ 
+                        test: patch[i].replace, //check the original value
+                        value: false //does original value equal false?
+                      }]);
+                      jsonpatch.apply(scope, [{ 
+                        replace: patch[i].replace, //revert the change in current scope
+                        value: (test ? false : null) //use original value from remoteScope cache (false or null)
                       }]);
                     }
                   }
