@@ -3798,6 +3798,8 @@ Handsontable.AutocompleteEditor = function (instance, td, row, col, prop, keyboa
     typeahead = keyboardProxy.data('typeahead');
   }
   else {
+    typeahead.$menu.off(); //remove previous typeahead bindings
+    keyboardProxy.off(); //remove previous typeahead bindings. Removing this will cause prepare to register 2 keydown listeners in typeahead
     typeahead.listen(); //add typeahead bindings
   }
   
