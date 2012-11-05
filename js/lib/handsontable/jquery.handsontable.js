@@ -3527,6 +3527,9 @@ var texteditor = {
    * Finishes text input in selected cells
    */
   finishEditing: function (instance, td, row, col, prop, keyboardProxy, isCancelled, ctrlDown) {
+    if (window.strictAutocomplete) {
+      return;
+    }
     if (texteditor.isCellEdited) {
       texteditor.isCellEdited = false;
       var val;
@@ -3851,6 +3854,8 @@ Handsontable.AutocompleteEditor = function (instance, td, row, col, prop, keyboa
       typeahead[i] = cellProperties[i];
     }
   }
+  
+  window.strictAutocomplete = !!cellProperties.strict;
   
   keyboardProxy.on("keydown.editor", function (event) {
     switch (event.keyCode) {
