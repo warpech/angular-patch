@@ -731,9 +731,10 @@ Handsontable.Core = function (rootElement, settings) {
 
     /**
      * Redraws borders around cells
+     * @param {Boolean} revertOriginal
      */
-    refreshBorders: function () {
-      editproxy.destroy();
+    refreshBorders: function (revertOriginal) {
+      editproxy.destroy(revertOriginal);
       if (!selection.isSelected()) {
         return;
       }
@@ -1152,7 +1153,6 @@ Handsontable.Core = function (rootElement, settings) {
           return;
         }
 
-        var r, c;
         priv.lastKeyCode = event.keyCode;
         if (selection.isSelected()) {
           var ctrlDown = (event.ctrlKey || event.metaKey) && !event.altKey; //catch CTRL but not right ALT (which in some systems triggers ALT+CTRL)
@@ -1291,10 +1291,11 @@ Handsontable.Core = function (rootElement, settings) {
 
     /**
      * Destroy current editor, if exists
+     * @param {Boolean} revertOriginal
      */
-    destroy: function () {
+    destroy: function (revertOriginal) {
       if (typeof priv.editorDestroyer === "function") {
-        priv.editorDestroyer();
+        priv.editorDestroyer(revertOriginal);
         priv.editorDestroyer = null;
       }
     },
@@ -1462,9 +1463,13 @@ Handsontable.Core = function (rootElement, settings) {
     return td;
   };
 
-  this.destroyEditor = function() {
-    selection.refreshBorders(); //destroys editor and reselects the cell
-  }
+  /**
+   * Destroys current editor, renders and selects current cell. If revertOriginal != true, edited data is saved
+   * @param {Boolean} revertOriginal
+   */
+  this.destroyEditor = function (revertOriginal) {
+    selection.refreshBorders(revertOriginal);
+  };
 
   /**
    * Populate cells at position with 2d array
@@ -1537,7 +1542,7 @@ Handsontable.Core = function (rootElement, settings) {
     else {
       priv.dataType = 'array';
     }
-    if(data[0]) {
+    if (data[0]) {
       priv.duckDataSchema = datamap.recursiveDuckSchema(data[0]);
     }
     else {
@@ -3553,17 +3558,21 @@ var texteditor = {
       texteditor.isCellEdited = false;
       var val;
       if (isCancelled) {
-        val = texteditor.originalValue;
+        val = [
+          [texteditor.originalValue]
+        ];
       }
       else {
-        val = $.trim(keyboardProxy.val());
+        val = [
+          [$.trim(keyboardProxy.val())]
+        ];
       }
       if (ctrlDown) { //if ctrl+enter and multiple cells selected, behave like Excel (finish editing and apply to all cells)
         var sel = instance.handsontable('getSelected');
-        instance.populateFromArray({row: sel[0], col: sel[1]}, [[val]], {row: sel[2], col: sel[3]}, false, 'edit');
+        instance.populateFromArray({row: sel[0], col: sel[1]}, val, {row: sel[2], col: sel[3]}, false, 'edit');
       }
       else {
-        instance.populateFromArray({row: row, col: col}, [[val]], null, false, 'edit');
+        instance.populateFromArray({row: row, col: col}, val, null, false, 'edit');
       }
     }
     keyboardProxy.off(".editor");
@@ -3658,14 +3667,12 @@ Handsontable.TextEditor = function (instance, td, row, col, prop, keyboardProxy,
       case 38: /* arrow up */
         if (texteditor.isCellEdited) {
           texteditor.finishEditing(instance, td, row, col, prop, keyboardProxy, false);
-          event.stopPropagation();
         }
         break;
 
       case 9: /* tab */
         if (texteditor.isCellEdited) {
           texteditor.finishEditing(instance, td, row, col, prop, keyboardProxy, false);
-          event.stopPropagation();
         }
         event.preventDefault();
         break;
@@ -3703,14 +3710,12 @@ Handsontable.TextEditor = function (instance, td, row, col, prop, keyboardProxy,
       case 40: /* arrow down */
         if (texteditor.isCellEdited) {
           texteditor.finishEditing(instance, td, row, col, prop, keyboardProxy, false);
-          event.stopPropagation();
         }
         break;
 
       case 27: /* ESC */
         if (texteditor.isCellEdited) {
-          texteditor.finishEditing(instance, td, row, col, prop, keyboardProxy, true); //hide edit field, restore old value, don't move selection, but refresh routines
-          instance.selectCell(row, col);
+          instance.destroyEditor(true);
           event.stopPropagation();
         }
         break;
@@ -3767,6 +3772,7 @@ Handsontable.TextEditor = function (instance, td, row, col, prop, keyboardProxy,
   instance.container.find('.htBorder.current').on('dblclick.editor', onDblClick);
 
   return function (isCancelled) {
+    texteditor.triggerOnlyByDestroyer = false;
     texteditor.finishEditing(instance, td, row, col, prop, keyboardProxy, isCancelled);
   }
 };
@@ -3813,7 +3819,7 @@ Handsontable.AutocompleteEditor = function (instance, td, row, col, prop, keyboa
     keyboardProxy.off(); //remove previous typeahead bindings. Removing this will cause prepare to register 2 keydown listeners in typeahead
     typeahead.listen(); //add typeahead bindings
   }
-  
+
   typeahead.minLength = 0;
   typeahead.source = cellProperties.autoComplete.source(row, col);
   typeahead.highlighter = cellProperties.autoComplete.highlighter || defaultAutoCompleteHighlighter;
@@ -3855,20 +3861,28 @@ Handsontable.AutocompleteEditor = function (instance, td, row, col, prop, keyboa
     instance.setDataAtCell(row, prop, typeahead.updater(val));
     return this.hide();
   };
-  
+
+  typeahead.render = function (items) {
+    typeahead._render.call(this, items);
+    if (cellProperties.autoComplete.strict) {
+      this.$menu.find('li:eq(0)').removeClass('active');
+    }
+    return this;
+  };
+
   /* overwrite typeahead methods (matcher, sorter, highlighter, updater, etc) if provided in cellProperties */
-  for(var i in cellProperties) {
-    if((typeahead.hasOwnProperty(i) || i === 'render') && i !== 'options') {
+  for (var i in cellProperties) {
+    if ((typeahead.hasOwnProperty(i) || i === 'render') && i !== 'options') {
       typeahead[i] = cellProperties[i];
     }
   }
-  
+
   keyboardProxy.on("keydown.editor", function (event) {
     switch (event.keyCode) {
       case 27: /* ESC */
         dontHide = false;
         break;
-        
+
       case 37: /* arrow left */
       case 39: /* arrow right */
       case 38: /* arrow up */
@@ -4487,7 +4501,7 @@ function handler(event) {
 
 /**
  * SheetClip - Spreadsheet Clipboard Parser
- * version 0.1
+ * version 0.2
  *
  * This tiny library transforms JavaScript arrays to strings that are pasteable by LibreOffice, OpenOffice,
  * Google Docs and Microsoft Excel.
@@ -4499,9 +4513,6 @@ function handler(event) {
 /*jslint white: true*/
 (function (global) {
   "use strict";
-
-  var UNDEFINED = (function () {
-  }());
 
   function countQuotes(str) {
     return str.split('"').length - 1;
@@ -4539,7 +4550,7 @@ function handler(event) {
             }
           }
         }
-        if(!multiline) {
+        if (!multiline) {
           a += 1;
         }
       }
@@ -4562,7 +4573,7 @@ function handler(event) {
               str += val;
             }
           }
-          else if (val === null || val === UNDEFINED) {
+          else if (val === null || val === void 0) { //void 0 resolves to undefined
             str += '';
           }
           else {
