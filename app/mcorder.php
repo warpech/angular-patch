@@ -52,7 +52,7 @@ function applicationLogic() {
           if (strpos(strtolower($product), strtolower($item['Product']['_Search$'])) !== false) {
             array_push($items[$key]['Product']['_Options'], array(
                 'Description' => $product,
-                'Image' => '',
+                'Image' => '//a248.e.akamai.net/assets.github.com/images/icons/emoji/hamburger.png',
                 'Pick$' => null
             ));
           }
