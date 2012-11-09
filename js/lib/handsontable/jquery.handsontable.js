@@ -3417,13 +3417,13 @@ var Handsontable = { //class namespace
     var $td = $(td);
     var $text = $('<div class="htAutocomplete"></div>');
     var $arrow = $('<div class="htAutocompleteArrow">&#x25BC;</div>');
-    $arrow.mouseup(function(){
+    $arrow.mouseup(function () {
       $td.triggerHandler('dblclick.editor');
     });
 
     Handsontable.TextCell.renderer(instance, $text[0], row, col, prop, value, cellProperties);
 
-    if($text.html() === '') {
+    if ($text.html() === '') {
       $text.html('&nbsp;');
     }
 
@@ -3902,6 +3902,8 @@ var Handsontable = { //class namespace
       }
     }
 
+    var wasDestroyed = false;
+
     keyboardProxy.on("keydown.editor", function (event) {
       switch (event.keyCode) {
         case 27: /* ESC */
@@ -3922,6 +3924,10 @@ var Handsontable = { //class namespace
     });
 
     keyboardProxy.on("keyup.editor", function (event) {
+        if (wasDestroyed) {
+          return;
+        }
+
         switch (event.keyCode) {
           case 9: /* tab */
           case 13: /* return/enter */
@@ -3960,6 +3966,7 @@ var Handsontable = { //class namespace
     instance.container.find('.htBorder.current').on('dblclick.editor', onDblClick);
 
     var destroyer = function (isCancelled) {
+      wasDestroyed = true;
       keyboardProxy.off(); //remove typeahead bindings
       textDestroyer(isCancelled);
       dontHide = false;
@@ -4042,16 +4049,16 @@ var Handsontable = { //class namespace
       afterGetCellMeta: []
     },
 
-    push: function(hook, fn){
+    push: function (hook, fn) {
       this.hooks[hook].push(fn);
     },
 
-    unshift: function(hook, fn){
+    unshift: function (hook, fn) {
       this.hooks[hook].unshift(fn);
     },
 
-    run: function(instance, hook, args){
-      for(var i = 0, ilen = this.hooks[hook].length; i<ilen; i++) {
+    run: function (instance, hook, args) {
+      for (var i = 0, ilen = this.hooks[hook].length; i < ilen; i++) {
         this.hooks[hook][i].apply(instance, args);
       }
     }
@@ -4213,7 +4220,7 @@ var Handsontable = { //class namespace
           }
           for (a in settings.autoComplete[i]) {
             if (settings.autoComplete[i].hasOwnProperty(a) && a !== 'match' && typeof cellProperties[i] === 'undefined') {
-              if(a === 'source') {
+              if (a === 'source') {
                 cellProperties[a] = settings.autoComplete[i][a](row, col);
               }
               else {
@@ -4248,13 +4255,15 @@ var Handsontable = { //class namespace
    * To Public License, Version 2, as published by Sam Hocevar. See
    * http://sam.zoy.org/wtfpl/COPYING for more details. */
 
-  (function($){
+  (function ($) {
 
     autoResize.defaults = {
-      onResize: function(){},
+      onResize: function () {
+      },
       animate: {
         duration: 200,
-        complete: function(){}
+        complete: function () {
+        }
       },
       extraSpace: 50,
       minHeight: 'original',
@@ -4287,15 +4296,15 @@ var Handsontable = { //class namespace
     $.fn.autoResize = autoResize;
 
     function autoResize(config) {
-      this.filter(autoResize.resizableFilterSelector).each(function(){
-        new AutoResizer( $(this), config );
+      this.filter(autoResize.resizableFilterSelector).each(function () {
+        new AutoResizer($(this), config);
       });
       return this;
     }
 
     function AutoResizer(el, config) {
 
-      if(this.clones) return;
+      if (this.clones) return;
 
       this.config = $.extend({}, autoResize.defaults, config);
 
@@ -4327,9 +4336,9 @@ var Handsontable = { //class namespace
 
     AutoResizer.prototype = {
 
-      bind: function() {
+      bind: function () {
 
-        var check = $.proxy(function(){
+        var check = $.proxy(function () {
           this.check();
           return true;
         }, this);
@@ -4345,11 +4354,11 @@ var Handsontable = { //class namespace
 
       },
 
-      unbind: function() {
+      unbind: function () {
         this.el.unbind('.autoResize');
       },
 
-      createClone: function() {
+      createClone: function () {
 
         var el = this.el,
           self = this,
@@ -4369,7 +4378,7 @@ var Handsontable = { //class namespace
           this.clones = this.clones.add(this.wClone);
         }
 
-        $.each(autoResize.cloneCSSProperties, function(i, p){
+        $.each(autoResize.cloneCSSProperties, function (i, p) {
           self.clones.css(p, el.css(p));
         });
 
@@ -4381,7 +4390,7 @@ var Handsontable = { //class namespace
 
       },
 
-      check: function(e, immediate) {
+      check: function (e, immediate) {
 
         var config = this.config,
           wClone = this.wClone,
@@ -4411,7 +4420,7 @@ var Handsontable = { //class namespace
             el.scrollLeft(0);
 
             config.animate && !immediate ?
-              el.stop(1,1).animate({
+              el.stop(1, 1).animate({
                 width: newWidth
               }, config.animate)
               : el.width(newWidth);
@@ -4452,14 +4461,14 @@ var Handsontable = { //class namespace
 
           // Either animate or directly apply height:
           config.animate && !immediate ?
-            el.stop(1,1).animate({
+            el.stop(1, 1).animate({
               height: scrollTop
             }, config.animate)
             : el.height(scrollTop);
         }
       },
 
-      destroy: function() {
+      destroy: function () {
         this.unbind();
         this.el.removeData('AutoResizer');
         this.clones.remove();
@@ -4469,7 +4478,7 @@ var Handsontable = { //class namespace
         delete this.clones;
       },
 
-      injectClone: function() {
+      injectClone: function () {
         (
           autoResize.cloneContainer ||
             (autoResize.cloneContainer = $('<arclones/>').appendTo('body'))
@@ -4491,31 +4500,31 @@ var Handsontable = { //class namespace
    * Requires: 1.2.2+
    */
 
-  (function($) {
+  (function ($) {
 
     var types = ['DOMMouseScroll', 'mousewheel'];
 
     if ($.event.fixHooks) {
-      for ( var i=types.length; i; ) {
+      for (var i = types.length; i;) {
         $.event.fixHooks[ types[--i] ] = $.event.mouseHooks;
       }
     }
 
     $.event.special.mousewheel = {
-      setup: function() {
-        if ( this.addEventListener ) {
-          for ( var i=types.length; i; ) {
-            this.addEventListener( types[--i], handler, false );
+      setup: function () {
+        if (this.addEventListener) {
+          for (var i = types.length; i;) {
+            this.addEventListener(types[--i], handler, false);
           }
         } else {
           this.onmousewheel = handler;
         }
       },
 
-      teardown: function() {
-        if ( this.removeEventListener ) {
-          for ( var i=types.length; i; ) {
-            this.removeEventListener( types[--i], handler, false );
+      teardown: function () {
+        if (this.removeEventListener) {
+          for (var i = types.length; i;) {
+            this.removeEventListener(types[--i], handler, false);
           }
         } else {
           this.onmousewheel = null;
@@ -4524,37 +4533,45 @@ var Handsontable = { //class namespace
     };
 
     $.fn.extend({
-      mousewheel: function(fn) {
+      mousewheel: function (fn) {
         return fn ? this.bind("mousewheel", fn) : this.trigger("mousewheel");
       },
 
-      unmousewheel: function(fn) {
+      unmousewheel: function (fn) {
         return this.unbind("mousewheel", fn);
       }
     });
 
 
     function handler(event) {
-      var orgEvent = event || window.event, args = [].slice.call( arguments, 1 ), delta = 0, returnValue = true, deltaX = 0, deltaY = 0;
+      var orgEvent = event || window.event, args = [].slice.call(arguments, 1), delta = 0, returnValue = true, deltaX = 0, deltaY = 0;
       event = $.event.fix(orgEvent);
       event.type = "mousewheel";
 
       // Old school scrollwheel delta
-      if ( orgEvent.wheelDelta ) { delta = orgEvent.wheelDelta/120; }
-      if ( orgEvent.detail     ) { delta = -orgEvent.detail/3; }
+      if (orgEvent.wheelDelta) {
+        delta = orgEvent.wheelDelta / 120;
+      }
+      if (orgEvent.detail) {
+        delta = -orgEvent.detail / 3;
+      }
 
       // New school multidimensional scroll (touchpads) deltas
       deltaY = delta;
 
       // Gecko
-      if ( orgEvent.axis !== undefined && orgEvent.axis === orgEvent.HORIZONTAL_AXIS ) {
+      if (orgEvent.axis !== undefined && orgEvent.axis === orgEvent.HORIZONTAL_AXIS) {
         deltaY = 0;
-        deltaX = -1*delta;
+        deltaX = -1 * delta;
       }
 
       // Webkit
-      if ( orgEvent.wheelDeltaY !== undefined ) { deltaY = orgEvent.wheelDeltaY/120; }
-      if ( orgEvent.wheelDeltaX !== undefined ) { deltaX = -1*orgEvent.wheelDeltaX/120; }
+      if (orgEvent.wheelDeltaY !== undefined) {
+        deltaY = orgEvent.wheelDeltaY / 120;
+      }
+      if (orgEvent.wheelDeltaX !== undefined) {
+        deltaX = -1 * orgEvent.wheelDeltaX / 120;
+      }
 
       // Add event and delta to the front of the arguments
       args.unshift(event, delta, deltaX, deltaY);
