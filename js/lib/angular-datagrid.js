@@ -227,7 +227,7 @@ angular.module('ui.directives', [])
             var index = this.$menu.find('.active').index();
             childScope[lhs] = lastItems[index];
             var instance = uiDatagrid.$container.data('handsontable');
-            instance.destroyEditor(true);
+            instance.destroyEditor();
             childScope.$eval(attrs.clickrow);
           }
 
