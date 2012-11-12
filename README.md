@@ -14,7 +14,7 @@ The current version should be deployed here:
 Include the library files (see [dist/](https://github.com/warpech/angular-patch/tree/master/dist) directory):
 
 ```html
-<script src="lib/angular.min.js"></script>
+<script src="examples/js/angular.min.js"></script>
 <script src="dist/angular-patch.js"></script>
 ```
 
