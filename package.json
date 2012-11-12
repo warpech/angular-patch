@@ -1,0 +1,10 @@
+{
+  "name": "angular-patch",
+  "description": "Angular directive for synchronizing scope with server",
+  "homepage": "https://github.com/warpech/angular-patch",
+  "bugs": {
+    "url": "https://github.com/warpech/angular-patch/issues"
+  },
+  "author": "Marcin Warpechowski <marcin@nextgen.pl>",
+  "version": "0.1.0-dev"
+}
