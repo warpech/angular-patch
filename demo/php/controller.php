@@ -1,6 +1,6 @@
 <?php
 
-require 'php/lib/FirePHPCore/FirePHP.class.php';
+require 'demo/php/lib/FirePHPCore/FirePHP.class.php';
 session_start();
 
 $path = $_SERVER['PATH_INFO'];
@@ -22,18 +22,18 @@ else {
   $appName = substr(strrchr($path, '/'), 1); //get everything after last slash (/test => test)
 }
 
-$tplPath = "app/{$appName}.html";
-$jsonPath = "app/{$appName}.json";
-$appPath = "app/{$appName}.php";
+$tplPath = "demo/app/{$appName}.html";
+$jsonPath = "demo/app/{$appName}.json";
+$appPath = "demo/app/{$appName}.php";
 
 if (!(preg_match('/^[a-zA-Z0-9_]+$/', $appName) && file_exists($tplPath) && file_exists($jsonPath) && file_exists($appPath))) {
-  include "php/tpl/404.html";
+  include "demo/php/tpl/404.html";
   die();
 }
 
 $injectEliminateRequest = true;
 
-include 'php/session.php';
+include 'demo/php/session.php';
 include $appPath;
 
 $patchOutput = array();
@@ -85,5 +85,5 @@ else if ($accept == 'json' && $method == 'PATCH') {
   echo json_encode($patchOutput);
 }
 else {
-  include "html/404.html";
+  include "demo/php/tpl/404.html";
 }

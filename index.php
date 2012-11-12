@@ -1,4 +1,4 @@
 <?php
 
-include "php/lib/JsonPatch.php";
-include "php/controller.php";
+include "demo/php/lib/JsonPatch.php";
+include "demo/php/controller.php";
