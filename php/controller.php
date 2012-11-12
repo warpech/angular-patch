@@ -27,7 +27,7 @@ $jsonPath = "app/{$appName}.json";
 $appPath = "app/{$appName}.php";
 
 if (!(preg_match('/^[a-zA-Z0-9_]+$/', $appName) && file_exists($tplPath) && file_exists($jsonPath) && file_exists($appPath))) {
-  include "html/404.html";
+  include "php/tpl/404.html";
   die();
 }
 
