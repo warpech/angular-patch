@@ -1,5 +1,5 @@
 angular.module('StarcounterLib', ['panelApp'])
-  .directive('serverScope', ['$http', 'appContext', function ($http, appContext) {
+  .directive('ngApp', ['$http', 'appContext', function ($http, appContext) {
     var directiveDefinitionObject = {
       restrict: 'A',
       compile: function compile(tElement, tAttrs, transclude) {

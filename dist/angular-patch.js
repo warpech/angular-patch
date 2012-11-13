@@ -1,11 +1,11 @@
 /**
  * angular-patch 0.1.1-dev
  * 
- * Date: Tue Nov 13 2012 11:15:33 GMT+0100 (Central European Standard Time)
+ * Date: Tue Nov 13 2012 17:36:31 GMT+0100 (Central European Standard Time)
 */
 
 angular.module('StarcounterLib', ['panelApp'])
-  .directive('serverScope', ['$http', 'appContext', function ($http, appContext) {
+  .directive('ngApp', ['$http', 'appContext', function ($http, appContext) {
     var directiveDefinitionObject = {
       restrict: 'A',
       compile: function compile(tElement, tAttrs, transclude) {
