@@ -2,7 +2,7 @@
 
 ##0.1.1-dev
 
-- new directive `ui-click` that triggers `null` change to the server
+- new directive `ui-click` that triggers `null` change to the server (see `mcorder` app for the example)
 
 ##0.1.0
 

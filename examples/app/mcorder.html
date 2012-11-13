@@ -34,7 +34,7 @@
     <div ui-handsontable datarows="item in Items">
       <datacolumn value="item.Product._Search$" title="'Favorite food'" type="'autocomplete'" live strict>
         <optionlist datarows="option in item.Product._Options" clickrow="item.Product._Search$ = option.Description">
-          <img src="{{option.Image}}" style="width: 16px; height: 16px;"> {{option.Description}}
+          <img ng-src="{{option.Image}}" style="width: 16px; height: 16px;"> {{option.Description}}
         </optionlist>
       </datacolumn>
       <datacolumn value="item.Quantity$" title="'Quantity'"/>
