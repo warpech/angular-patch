@@ -1,7 +1,7 @@
 /**
- * angular-patch 0.1.1-dev
+ * angular-patch 0.1.1
  * 
- * Date: Tue Nov 13 2012 17:36:31 GMT+0100 (Central European Standard Time)
+ * Date: Tue Nov 13 2012 18:40:21 GMT+0100 (Central European Standard Time)
 */
 
 angular.module('StarcounterLib', ['panelApp'])
