@@ -41,7 +41,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 if (substr_count($_SERVER['HTTP_ACCEPT'], 'application/json')) {
   $accept = 'json';
 }
-else if (substr_count($_SERVER['HTTP_ACCEPT'], 'text/html')) {
+else if (substr_count($_SERVER['HTTP_ACCEPT'], 'text/html') || substr_count($_SERVER['HTTP_ACCEPT'], '*/*')) { //*/* is IE8
   $accept = 'html';
 }
 
