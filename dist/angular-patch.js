@@ -1,7 +1,7 @@
 /**
- * angular-patch 0.1.0
+ * angular-patch 0.1.1-dev
  * 
- * Date: Tue Nov 13 2012 10:51:25 GMT+0100 (Central European Standard Time)
+ * Date: Tue Nov 13 2012 11:15:33 GMT+0100 (Central European Standard Time)
 */
 
 angular.module('StarcounterLib', ['panelApp'])
@@ -201,6 +201,25 @@ angular.module('StarcounterLib', ['panelApp'])
             parseViewModelId(scope);
             getRoot(scope);
           }
+        }
+      }
+    };
+    return directiveDefinitionObject;
+  }])
+  
+  .directive('uiClick', ['$parse', function ($parse) {
+    var directiveDefinitionObject = {
+      restrict: 'A',
+      compile: function compile(tElement, tAttrs, transclude) {
+        var fn = $parse(tAttrs.uiClick + ' = "$$null"');
+        return function postLink(scope, element, attrs, controller) {
+          element.bind('click', function(event) {
+            scope.$apply(function() {
+              fn(scope, {
+                $event:event
+              });
+            });
+          });
         }
       }
     };

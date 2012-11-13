@@ -199,4 +199,23 @@ angular.module('StarcounterLib', ['panelApp'])
       }
     };
     return directiveDefinitionObject;
+  }])
+  
+  .directive('uiClick', ['$parse', function ($parse) {
+    var directiveDefinitionObject = {
+      restrict: 'A',
+      compile: function compile(tElement, tAttrs, transclude) {
+        var fn = $parse(tAttrs.uiClick + ' = "$$null"');
+        return function postLink(scope, element, attrs, controller) {
+          element.bind('click', function(event) {
+            scope.$apply(function() {
+              fn(scope, {
+                $event:event
+              });
+            });
+          });
+        }
+      }
+    };
+    return directiveDefinitionObject;
   }]);

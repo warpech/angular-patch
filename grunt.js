@@ -41,7 +41,7 @@ module.exports = function (grunt) {
       "dist/angular-patch.min.js": [ "<banner>", "dist/angular-patch.js" ]
     },
     watch: {
-      files: ['<config:concat.full_js.src>'],
+      files: ['src/serverScope.js'],
       tasks: 'concat min'
     }
   });

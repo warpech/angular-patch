@@ -1,5 +1,9 @@
 # Changelog
 
+##0.1.1-dev
+
+- new directive `ui-click` that triggers `null` change to the server
+
 ##0.1.0
 
 Changes since Nov 5, 2012:
