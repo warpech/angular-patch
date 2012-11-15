@@ -2,6 +2,7 @@
 
 ## 0.1.2-dev
 
+- attach server scope data to $rootScope which allows to put `ng-app` to `<html>`
 - upgrade Angular UI Handsontable to 0.1.2-dev
 
 ## 0.1.1

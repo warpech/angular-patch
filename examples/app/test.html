@@ -17,7 +17,7 @@
     <meta name="View-Model" content="<?php echo $_SESSION['data']['__vm']?>">
     <?php } ?>
   </head>
-  <body ng-controller="MyCtrl" server-scope>
+  <body ng-controller="MyCtrl">
 
     <h1>Angular Patch demo</h1>
 
@@ -28,11 +28,11 @@
     <table>
       <tr>
         <td>First name</td>
-        <td><input ng-model="FirstName"></td>
+        <td><input ng-model="$root.FirstName"></td><!-- $root. is needed because Angular cannot propagate changes in primitive values -->
       </tr>
       <tr>
         <td>Last name</td>
-        <td><input ng-model="LastName"></td>
+        <td><input ng-model="$root.LastName"></td>
       </tr>
       <tr>
         <td>Full name (generated on server)</td>
@@ -46,7 +46,7 @@
 
     <hr>
 
-    <input ng-model="MyTextBox">
+    <input ng-model="$root.MyTextBox">
     <div>{{MyMessage}}</div>
 
     <hr>

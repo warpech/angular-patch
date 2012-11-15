@@ -1,5 +1,5 @@
 angular.module('StarcounterLib', ['panelApp'])
-  .directive('ngApp', ['$http', 'appContext', function ($http, appContext) {
+  .directive('ngApp', ['$http', 'appContext', '$rootScope', function ($http, appContext, $rootScope) {
     var directiveDefinitionObject = {
       restrict: 'A',
       compile: function compile(tElement, tAttrs, transclude) {
@@ -7,14 +7,14 @@ angular.module('StarcounterLib', ['panelApp'])
         var remoteScope = {};
         var rootLoaded = false;
 
-        function overwriteRoot(scope, data) {
+        function overwriteRoot(data) {
           remoteScope = angular.copy(data); //remote is current state of data on server
           for (var i in data) {
-            if (data.hasOwnProperty(i)) {              
-              scope[i] = data[i];
+            if (data.hasOwnProperty(i)) {
+              $rootScope[i] = data[i];
             }
           }
-          findAndSetWatchers(scope);
+          findAndSetWatchers($rootScope);
         }
 
         function patchRoot(scope, patch) {
@@ -43,7 +43,7 @@ angular.module('StarcounterLib', ['panelApp'])
             method: 'GET',
             url: getRequestUrl(scope)
           }).success(function (data, status, headers, config) {
-            overwriteRoot(scope, data);            
+            overwriteRoot(data);            
             rootLoaded = true;
           });
         }
@@ -179,7 +179,7 @@ angular.module('StarcounterLib', ['panelApp'])
               // json file loaded
               console.log("NOTICE: Local scope was loaded (" + attrs.serverScope + ")");
               // apply loaded data to scope
-              overwriteRoot(scope, data);
+              overwriteRoot(data);
               rootLoaded = true;
             }).error(function (data, status, headers, config) {
               console.log("ERROR: Loading " + attrs.serverScope + " (" + status + ")");
@@ -188,7 +188,7 @@ angular.module('StarcounterLib', ['panelApp'])
           }
 
           if (typeof window.__elim_rq !== 'undefined') {
-            overwriteRoot(scope, window.__elim_rq);
+            overwriteRoot(window.__elim_rq);
             rootLoaded = true;
           }
           else {
