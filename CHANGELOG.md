@@ -4,6 +4,8 @@
 
 - attach server scope data to $rootScope which allows to put `ng-app` to `<html>`
 - upgrade Angular UI Handsontable to 0.1.2-dev
+- update mcorder.html to use `ng-view`
+- View-Model url now also works if hash URL was used
 
 ## 0.1.1
 

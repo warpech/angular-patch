@@ -1,7 +1,7 @@
 /**
  * angular-patch 0.1.2-dev
  * 
- * Date: Thu Nov 15 2012 14:08:31 GMT+0100 (Central European Standard Time)
+ * Date: Fri Nov 16 2012 11:05:06 GMT+0100 (Central European Standard Time)
 */
 
 angular.module('StarcounterLib', ['panelApp'])
@@ -41,7 +41,11 @@ angular.module('StarcounterLib', ['panelApp'])
         }
 
         function getRequestUrl(scope) {
-          return window.location.href + '/../__vm/' + scope['View-Model'];
+          var href = window.location.href;
+          if (window.location.hash) {
+            href = href.substring(0, href.length - window.location.hash.length)
+          }
+          return href + '/../__vm/' + scope['View-Model'];
         }
 
         function getRoot(scope) {
