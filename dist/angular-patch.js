@@ -1,11 +1,21 @@
 /**
  * angular-patch 0.1.2-dev
  * 
- * Date: Fri Nov 16 2012 11:05:06 GMT+0100 (Central European Standard Time)
+ * Date: Fri Nov 16 2012 12:30:18 GMT+0100 (Central European Standard Time)
 */
 
-angular.module('StarcounterLib', ['panelApp'])
-  .directive('ngApp', ['$http', 'appContext', '$rootScope', function ($http, appContext, $rootScope) {
+angular.module('StarcounterLib.config', []).value('StarcounterLib.config', {});
+
+angular.module('StarcounterLib', ['panelApp', 'StarcounterLib.config'])
+  .directive('ngApp', ['$http', 'appContext', '$rootScope', 'StarcounterLib.config', function ($http, appContext, $rootScope, uiConfig) {  
+    
+    var defaultConfig = {
+      getRequestUrl: function(scope){
+        return '/__vm/' + scope['View-Model'];
+      }
+    }
+    uiConfig = $.extend({}, defaultConfig, uiConfig);
+    
     var directiveDefinitionObject = {
       restrict: 'A',
       compile: function compile(tElement, tAttrs, transclude) {
@@ -40,18 +50,10 @@ angular.module('StarcounterLib', ['panelApp'])
           }
         }
 
-        function getRequestUrl(scope) {
-          var href = window.location.href;
-          if (window.location.hash) {
-            href = href.substring(0, href.length - window.location.hash.length)
-          }
-          return href + '/../__vm/' + scope['View-Model'];
-        }
-
         function getRoot(scope) {
           $http({
             method: 'GET',
-            url: getRequestUrl(scope)
+            url: uiConfig.getRequestUrl(scope)
           }).success(function (data, status, headers, config) {
             overwriteRoot(data);            
             rootLoaded = true;
@@ -61,7 +63,7 @@ angular.module('StarcounterLib', ['panelApp'])
         function updateServer(scope, update) {
           $http({
             method: 'PATCH',
-            url: getRequestUrl(scope),
+            url: uiConfig.getRequestUrl(scope),
             data: update
           }).success(function (data, status, headers, config) {
             patchRoot(scope, data);
