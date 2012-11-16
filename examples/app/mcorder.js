@@ -1,4 +1,4 @@
-angular.module('McOrderApp', ['ui.directives', 'StarcounterLib'])
+angular.module('McOrderApp', ['uiHandsontable', 'StarcounterLib'])
 
   /**
    * Angular Patch configuration

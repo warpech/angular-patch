@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.4-dev
+
+- upgrade Angular UI Handsontable to 0.1.3-dev (changes module name to `uiHandsontable`, fixes namespace conflict with Angular UI)
+
 ## 0.1.3 (Nov 16, 2012)
 
 - new `ngRemoteapp` directive that bootstraps the application modules without a need ngApp + JavaScript file. See bootstrap.html for an example
