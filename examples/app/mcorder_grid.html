@@ -4,7 +4,7 @@
 <h3>{{Items.length}} items &ndash; total quantity: {{TotalQuantity}}</h3>
 
 <ui-handsontable datarows="item in Items">
-  <datacolumn value="item.Product._Search$" title="'Favorite food'" type="'autocomplete'" live strict>
+  <datacolumn value="item.Product._Search$" title="'Favorite food'" type="'autocomplete'" strict>
     <optionlist datarows="option in item.Product._Options" clickrow="item.Product._Search$ = option.Description">
       <img ng-src="{{option.Image}}" style="width: 16px; height: 16px; border: 0"> {{option.Description}}
     </optionlist>
