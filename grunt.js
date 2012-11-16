@@ -30,6 +30,7 @@ module.exports = function (grunt) {
         src: [
           '<banner>',
           'src/serverScope.js',
+          'src/bootstrap.js',
           'src/3rdparty/appContext.js',
           'src/3rdparty/jsondiffpatch.js',
           'src/3rdparty/jsonpatch.js'
@@ -41,7 +42,7 @@ module.exports = function (grunt) {
       "dist/angular-patch.min.js": [ "<banner>", "dist/angular-patch.js" ]
     },
     watch: {
-      files: ['src/serverScope.js'],
+      files: ['src/*'],
       tasks: 'concat min'
     }
   });
