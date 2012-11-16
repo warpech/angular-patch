@@ -3,6 +3,7 @@
 ## 0.1.3-dev
 
 - serverScope.js is not dependent on jQuery.extend anymore (switched to use angular.extend)
+- fix test.html (configure request URL for mockup server)
 
 ## 0.1.2 (Nov 16, 2012)
 
