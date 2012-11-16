@@ -1,14 +1,15 @@
 angular.module('StarcounterLib.config', []).value('StarcounterLib.config', {});
 
 angular.module('StarcounterLib', ['panelApp', 'StarcounterLib.config'])
-  .directive('ngApp', ['$http', 'appContext', '$rootScope', 'StarcounterLib.config', function ($http, appContext, $rootScope, uiConfig) {  
+  .directive('ngApp', ['$http', 'appContext', '$rootScope', 'StarcounterLib.config', function ($http, appContext, $rootScope, appConfig) {  
     
     var defaultConfig = {
       getRequestUrl: function(scope){
         return '/__vm/' + scope['View-Model'];
       }
     }
-    uiConfig = $.extend({}, defaultConfig, uiConfig);
+    var config = {};
+    angular.extend(config, defaultConfig, appConfig);
     
     var directiveDefinitionObject = {
       restrict: 'A',
@@ -47,7 +48,7 @@ angular.module('StarcounterLib', ['panelApp', 'StarcounterLib.config'])
         function getRoot(scope) {
           $http({
             method: 'GET',
-            url: uiConfig.getRequestUrl(scope)
+            url: config.getRequestUrl(scope)
           }).success(function (data, status, headers, config) {
             overwriteRoot(data);            
             rootLoaded = true;
@@ -57,7 +58,7 @@ angular.module('StarcounterLib', ['panelApp', 'StarcounterLib.config'])
         function updateServer(scope, update) {
           $http({
             method: 'PATCH',
-            url: uiConfig.getRequestUrl(scope),
+            url: config.getRequestUrl(scope),
             data: update
           }).success(function (data, status, headers, config) {
             patchRoot(scope, data);

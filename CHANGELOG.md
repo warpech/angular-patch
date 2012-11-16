@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.3-dev
+
+- serverScope.js is not dependent on jQuery.extend anymore (switched to use angular.extend)
+
 ## 0.1.2 (Nov 16, 2012)
 
 - attach server scope data to $rootScope which allows to put `ng-app` to `<html>`
