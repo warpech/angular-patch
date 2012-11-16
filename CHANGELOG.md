@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.3-dev
+## 0.1.3 (Nov 16, 2012)
 
 - new `ngRemoteapp` directive that bootstraps the application modules without a need ngApp + JavaScript file. See bootstrap.html for an example
 - serverScope.js is not dependent on jQuery.extend anymore (switched to use angular.extend)
