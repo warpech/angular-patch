@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.5-dev
+
+- restore `uiClick` directive which was removed by mistake in 0.1.3
+
 ## 0.1.4 (Nov 16, 2012)
 
 - upgrade Angular UI Handsontable to 0.1.3-dev (changes module name to `uiHandsontable`, fixes namespace conflict with Angular UI)

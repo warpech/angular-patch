@@ -1,22 +1,22 @@
 /**
- * angular-patch 0.1.4
+ * angular-patch 0.1.5-dev
  * 
- * Date: Fri Nov 16 2012 20:26:54 GMT+0100 (Central European Standard Time)
+ * Date: Tue Nov 20 2012 12:47:53 GMT+0100 (Central European Standard Time)
 */
 
 angular.module('StarcounterLib.config', []).value('StarcounterLib.config', {});
 
 function ngAppFactory() {
-  return ['$http', 'appContext', '$rootScope', 'StarcounterLib.config', function ($http, appContext, $rootScope, appConfig) {  
-    
+  return ['$http', 'appContext', '$rootScope', 'StarcounterLib.config', function ($http, appContext, $rootScope, appConfig) {
+
     var defaultConfig = {
-      getRequestUrl: function(scope){
+      getRequestUrl: function (scope) {
         return '/__vm/' + scope['View-Model'];
       }
     }
     var config = {};
     angular.extend(config, defaultConfig, appConfig);
-    
+
     var directiveDefinitionObject = {
       restrict: 'A',
       compile: function compile(tElement, tAttrs, transclude) {
@@ -56,11 +56,11 @@ function ngAppFactory() {
             method: 'GET',
             url: config.getRequestUrl(scope)
           }).success(function (data, status, headers, config) {
-            overwriteRoot(data);            
+            overwriteRoot(data);
             rootLoaded = true;
           });
         }
-        
+
         function updateServer(scope, update) {
           $http({
             method: 'PATCH',
@@ -68,8 +68,8 @@ function ngAppFactory() {
             data: update
           }).success(function (data, status, headers, config) {
             patchRoot(scope, data);
-            if(!scope.$$phase) { //digest not in progress
-              scope.$digest();                
+            if (!scope.$$phase) { //digest not in progress
+              scope.$digest();
             }
           });
         }
@@ -152,30 +152,34 @@ function ngAppFactory() {
                   }
                   var jsonPointer = '/' + prop.replace(/\./g, '/');
                   var patch = diffToPatch(jsondiffpatch.diff(remoteScope[prop], current), jsonPointer);
-                  
-                  for(var i= 0, ilen=patch.length; i<ilen; i++) {
-                    if(typeof patch[i].replace !== 'undefined' && patch[i].value === '$$null') {
+
+                  for (var i = 0, ilen = patch.length; i < ilen; i++) {
+                    if (typeof patch[i].replace !== 'undefined' && patch[i].value === '$$null') {
                       /*
-                      If value of a property was changed to string '$$null', it means that we want to send real null 
-                      to server and keep null as the value in client side.
-                      This is a workaround to null -> null changes being not detected by watch mechanism.
-                      Null is used as button trigger in Starcounter.
-                      */
+                       If value of a property was changed to string '$$null', it means that we want to send real null
+                       to server and keep null as the value in client side.
+                       This is a workaround to null -> null changes being not detected by watch mechanism.
+                       Null is used as button trigger in Starcounter.
+                       */
                       patch[i].value = null; //set the change to null in JSON Patch
-                      
+
                       /* determine if original value was false or null */
-                      var test = jsonpatch.apply(remoteScope, [{ 
+                      var test = jsonpatch.apply(remoteScope, [
+                      {
                         test: patch[i].replace, //check the original value
                         value: false //does original value equal false?
-                      }]);
-                      jsonpatch.apply(scope, [{ 
+                      }
+                      ]);
+                      jsonpatch.apply(scope, [
+                      {
                         replace: patch[i].replace, //revert the change in current scope
                         value: (test ? false : null) //use original value from remoteScope cache (false or null)
-                      }]);
+                      }
+                      ]);
                     }
                   }
-                  
-                  if(patch.length) {
+
+                  if (patch.length) {
                     updateServer(scope, patch);
                   }
                 }
@@ -217,7 +221,25 @@ function ngAppFactory() {
 
 angular.module('StarcounterLib', ['panelApp', 'StarcounterLib.config'])
   .directive('ngApp', ngAppFactory())
-  .directive('ngRemoteapp', ngAppFactory());
+  .directive('ngRemoteapp', ngAppFactory())
+  .directive('uiClick', ['$parse', function ($parse) {
+    var directiveDefinitionObject = {
+      restrict: 'A',
+      compile: function compile(tElement, tAttrs, transclude) {
+        var fn = $parse(tAttrs.uiClick + ' = "$$null"');
+        return function postLink(scope, element, attrs, controller) {
+          element.bind('click', function (event) {
+            scope.$apply(function () {
+              fn(scope, {
+                $event: event
+              });
+            });
+          });
+        }
+      }
+    };
+    return directiveDefinitionObject;
+  }]);
 angular.element(document).ready(function () {
 
   // 1. After the page and all of the code is loaded, find the root of the HTML template, which is typically the root of the document.
