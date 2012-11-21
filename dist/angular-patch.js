@@ -1,7 +1,7 @@
 /**
  * angular-patch 0.1.5-dev
  * 
- * Date: Tue Nov 20 2012 12:47:53 GMT+0100 (Central European Standard Time)
+ * Date: Wed Nov 21 2012 01:24:36 GMT+0100 (Central European Standard Time)
 */
 
 angular.module('StarcounterLib.config', []).value('StarcounterLib.config', {});
@@ -204,8 +204,8 @@ function ngAppFactory() {
             return;
           }
 
-          if (typeof window.__elim_rq !== 'undefined') {
-            overwriteRoot(window.__elim_rq);
+          if (typeof window.__elim_req !== 'undefined') {
+            overwriteRoot(window.__elim_req);
             rootLoaded = true;
           }
           else {

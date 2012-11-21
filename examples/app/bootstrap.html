@@ -3,7 +3,7 @@
   <head>
     <?php if($injectEliminateRequest == true) { ?>
     <script>
-      var __elim_rq = <?php echo json_encode($_SESSION['data']) ?>;
+      var __elim_req = <?php echo json_encode($_SESSION['data']) ?>;
     </script>
     <?php } ?>
     <meta charset="utf-8">

@@ -198,8 +198,8 @@ function ngAppFactory() {
             return;
           }
 
-          if (typeof window.__elim_rq !== 'undefined') {
-            overwriteRoot(window.__elim_rq);
+          if (typeof window.__elim_req !== 'undefined') {
+            overwriteRoot(window.__elim_req);
             rootLoaded = true;
           }
           else {

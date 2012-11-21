@@ -4,6 +4,7 @@
 
 - restore `uiClick` directive which was removed by mistake in 0.1.3
 - fix errors when a row was removed
+- rename `window.__elim_rq` to `window.__elim_req`
 
 ## 0.1.4 (Nov 16, 2012)
 
