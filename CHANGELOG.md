@@ -3,6 +3,7 @@
 ## 0.1.5-dev
 
 - restore `uiClick` directive which was removed by mistake in 0.1.3
+- fix errors when a row was removed
 
 ## 0.1.4 (Nov 16, 2012)
 

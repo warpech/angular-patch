@@ -29,6 +29,12 @@ function applicationLogic() {
     array_push($items, getProductSchema()); //add empty row to the table
     setProp('Items', $items);
   }
+  
+  if (patchMentions('/RemoveRow$')) {
+    $items = getProp('Items');
+    array_pop($items); //remove row from the end of the table
+    setProp('Items', $items);
+  }
 
   if (patchMentions('/Items')) {
     $items = getProp('Items');

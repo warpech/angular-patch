@@ -22,5 +22,6 @@
   "Total": 50.00,
   "Save$": null,
   "Cancel$": null,
-  "AddRow$": null
+  "AddRow$": null,
+  "RemoveRow$": null
 }
