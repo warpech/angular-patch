@@ -1,9 +1,9 @@
 # Changelog
 
-## 0.1.5-dev
+## 0.1.5 (Nov 22, 2012)
 
 - restore `uiClick` directive which was removed by mistake in 0.1.3
-- fix errors when a row was removed
+- fix for removing rows in grid data source (Angular UI Handsontable 0.1.5)
 - rename `window.__elim_rq` to `window.__elim_req`
 
 ## 0.1.4 (Nov 16, 2012)
