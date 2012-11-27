@@ -180,16 +180,16 @@ function ngAppFactory() {
 
         return function postLink(scope, element, attrs, controller) {
           // Check if we should load local json file as a scope
-          if (attrs.serverScope) {
+          if (attrs.mockupData && typeof window.__elim_req == 'undefined') {
             // Load local file
-            $http.get(attrs.serverScope).success(function (data, status, headers, config) {
+            $http.get(attrs.mockupData).success(function (data, status, headers, config) {
               // json file loaded
-              console.log("NOTICE: Local scope was loaded (" + attrs.serverScope + ")");
+              console.log("NOTICE: Local scope was loaded (" + attrs.mockupData + ")");
               // apply loaded data to scope
               overwriteRoot(data);
               rootLoaded = true;
             }).error(function (data, status, headers, config) {
-              console.log("ERROR: Loading " + attrs.serverScope + " (" + status + ")");
+              console.log("ERROR: Loading " + attrs.mockupData + " (" + status + ")");
             });
             return;
           }
