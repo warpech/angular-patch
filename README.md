@@ -18,13 +18,19 @@ Include the library files (see [dist/](https://github.com/warpech/angular-patch/
 <script src="dist/angular-patch.js"></script>
 ```
 
-Place `server-scope` directive in the scope that you want to be synchronized with the server:
+Make sure the `starcounterLib` module (that comes from `angular-patch.js`) is loaded in `ngApp`. The basic usage is:
 
 ```html
-<body ng-controller="MyCtrl" server-scope>
+<html ng-app="starcounterLib">
 ```
 
-From now on, changes in that scope will be sent to server.
+Even simplier, you can use the directive `ng-remoteapp` that will inject module `starcounterLib` for you.
+
+```html
+<html ng-remoteapp="list other modules here, divided by comma, starcounterLib does not have to be here">
+```
+
+From now on, changes in root scope will be sent to server.
 
 *More docs will follow soon*
 
