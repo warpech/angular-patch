@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.6 (Nov 27, 2012)
+
+- rename `serverScope` directive to `mockupData`
+
 ## 0.1.5 (Nov 22, 2012)
 
 - restore `uiClick` directive which was removed by mistake in 0.1.3

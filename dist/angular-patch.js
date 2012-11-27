@@ -1,7 +1,7 @@
 /**
- * angular-patch 0.1.5
+ * angular-patch 0.1.6
  * 
- * Date: Thu Nov 22 2012 12:58:59 GMT+0100 (Central European Standard Time)
+ * Date: Tue Nov 27 2012 14:45:43 GMT+0100 (Central European Standard Time)
 */
 
 angular.module('StarcounterLib.config', []).value('StarcounterLib.config', {});
@@ -240,6 +240,7 @@ angular.module('StarcounterLib', ['panelApp', 'StarcounterLib.config'])
     };
     return directiveDefinitionObject;
   }]);
+
 angular.element(document).ready(function () {
 
   // 1. After the page and all of the code is loaded, find the root of the HTML template, which is typically the root of the document.
