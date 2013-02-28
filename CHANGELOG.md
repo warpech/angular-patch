@@ -1,5 +1,9 @@
 # Changelog
 
+## HEAD (Feb 28, 2012)
+
+- upgrade build system to Grunt 0.4.0 (read instructions how to upgrade here: http://gruntjs.com/upgrading-from-0.3-to-0.4)
+
 ## 0.1.6 (Nov 27, 2012)
 
 - rename `serverScope` directive to `mockupData`
