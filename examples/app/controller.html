@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en" ng-remoteapp="uiHandsontableApp">
+  <head>
+    <?php if($injectEliminateRequest == true) { ?>
+    <script>
+      var __elim_req = <?php echo json_encode($_SESSION['data']) ?>;
+    </script>
+    <?php } ?>
+    <meta charset="utf-8">
+    <title>Angular Patch McOrder demo</title>
+    <script src="../examples/js/jquery.min.js"></script>
+    <script src="../examples/js/angular.min.js"></script>
+    <script src="../examples/js/angular-ui-handsontable.full.js"></script>
+    <link rel="stylesheet" media="screen" href="../examples/js/angular-ui-handsontable.full.css">
+
+    <script src="../dist/angular-patch.js"></script>
+
+    <script src="../examples/app/controller.js"></script>
+    <?php if($injectEliminateRequest == false) { ?>
+    <meta name="View-Model" content="<?php echo $_SESSION['data']['__vm']?>">
+    <?php } ?>
+  </head>
+  <body ng-controller="MyCtrl">
+
+    <h1>Angular Patch McOrder demo (with ngRemoteapp)</h1>
+
+    <p>The session is restarted when you refresh the window. Random name is generated on session start</p>
+
+    <h2>Order no {{OrderNo}}</h2>
+    <h3>{{Items.length}} items &ndash; total quantity: {{TotalQuantity}}</h3>
+
+  <ui-handsontable datarows="item in Items">
+    <datacolumn value="item.Product._Search$" title="'Favorite food'" type="'autocomplete'" strict>
+      <optionlist datarows="option in item.Product._Options" clickrow="item.Product._Search$ = option.Description">
+        <img ng-src="{{option.Image}}" style="width: 16px; height: 16px; border: 0"> {{option.Description}}
+      </optionlist>
+    </datacolumn>
+    <datacolumn value="item.Quantity$" title="'Quantity'"/>
+  </ui-handsontable>
+
+  <button ui-click="AddRow$">Add row</button><!-- $root. is needed because Angular cannot propagate changes in primitive values -->
+
+</body>
+</html>

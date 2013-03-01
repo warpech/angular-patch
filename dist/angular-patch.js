@@ -1,7 +1,7 @@
 /**
  * angular-patch 0.1.6
  * 
- * Date: Thu Feb 28 2013 01:18:06 GMT+0100 (Central European Standard Time)
+ * Date: Fri Mar 01 2013 16:51:52 GMT+0100 (Central European Standard Time)
 */
 
 angular.module('StarcounterLib.config', []).value('StarcounterLib.config', {});
@@ -38,6 +38,7 @@ function ngAppFactory() {
           if (patch.length) {
             jsonpatch.apply(remoteScope, angular.copy(patch)); //remote is current state of data on server
             jsonpatch.apply(scope, patch);
+            console.log("AFTER PATCHed", scope.Items[0].Product._Options[0]);
           }
         }
 
@@ -56,9 +57,9 @@ function ngAppFactory() {
             method: 'GET',
             url: config.getRequestUrl(scope)
           }).success(function (data, status, headers, config) {
-            overwriteRoot(data);
-            rootLoaded = true;
-          });
+              overwriteRoot(data);
+              rootLoaded = true;
+            });
         }
 
         function updateServer(scope, update) {
@@ -67,11 +68,17 @@ function ngAppFactory() {
             url: config.getRequestUrl(scope),
             data: update
           }).success(function (data, status, headers, config) {
-            patchRoot(scope, data);
-            if (!scope.$$phase) { //digest not in progress
-              scope.$digest();
-            }
-          });
+              patchRoot(scope, data);
+              if (!scope.$$phase) { //digest not in progress
+                scope.$apply();
+
+              }
+              else {
+                setTimeout(function () {
+                  scope.$apply();
+                });
+              }
+            });
         }
 
         window.updateServer = updateServer;
@@ -165,16 +172,16 @@ function ngAppFactory() {
 
                       /* determine if original value was false or null */
                       var test = jsonpatch.apply(remoteScope, [
-                      {
-                        test: patch[i].replace, //check the original value
-                        value: false //does original value equal false?
-                      }
+                        {
+                          test: patch[i].replace, //check the original value
+                          value: false //does original value equal false?
+                        }
                       ]);
                       jsonpatch.apply(scope, [
-                      {
-                        replace: patch[i].replace, //revert the change in current scope
-                        value: (test ? false : null) //use original value from remoteScope cache (false or null)
-                      }
+                        {
+                          replace: patch[i].replace, //revert the change in current scope
+                          value: (test ? false : null) //use original value from remoteScope cache (false or null)
+                        }
                       ]);
                     }
                   }
@@ -199,8 +206,8 @@ function ngAppFactory() {
               overwriteRoot(data);
               rootLoaded = true;
             }).error(function (data, status, headers, config) {
-              console.log("ERROR: Loading " + attrs.mockupData + " (" + status + ")");
-            });
+                console.log("ERROR: Loading " + attrs.mockupData + " (" + status + ")");
+              });
             return;
           }
 
@@ -223,23 +230,23 @@ angular.module('StarcounterLib', ['panelApp', 'StarcounterLib.config'])
   .directive('ngApp', ngAppFactory())
   .directive('ngRemoteapp', ngAppFactory())
   .directive('uiClick', ['$parse', function ($parse) {
-    var directiveDefinitionObject = {
-      restrict: 'A',
-      compile: function compile(tElement, tAttrs, transclude) {
-        var fn = $parse(tAttrs.uiClick + ' = "$$null"');
-        return function postLink(scope, element, attrs, controller) {
-          element.bind('click', function (event) {
-            scope.$apply(function () {
-              fn(scope, {
-                $event: event
-              });
+  var directiveDefinitionObject = {
+    restrict: 'A',
+    compile: function compile(tElement, tAttrs, transclude) {
+      var fn = $parse(tAttrs.uiClick + ' = "$$null"');
+      return function postLink(scope, element, attrs, controller) {
+        element.bind('click', function (event) {
+          scope.$apply(function () {
+            fn(scope, {
+              $event: event
             });
           });
-        }
+        });
       }
-    };
-    return directiveDefinitionObject;
-  }]);
+    }
+  };
+  return directiveDefinitionObject;
+}]);
 
 angular.element(document).ready(function () {
 
