@@ -9,7 +9,7 @@ angular.module('uiHandsontableApp', ['StarcounterLib','uiHandsontable'])
      * This is needed if you want requests to be made relatively to current path.
      * If you want requests to be made in the absolute path, skip this part (default getRequestUrl will be used)
      */
-    XgetRequestUrl: function(scope){
+    getRequestUrl: function(scope){
       var href = window.location.href;
       if (window.location.hash) {
         href = href.substring(0, href.length - window.location.hash.length)
