@@ -32,7 +32,6 @@ function ngAppFactory() {
           if (patch.length) {
             jsonpatch.apply(remoteScope, angular.copy(patch)); //remote is current state of data on server
             jsonpatch.apply(scope, patch);
-            console.log("AFTER PATCHed", scope.Items[0].Product._Options[0]);
           }
         }
 
@@ -100,14 +99,15 @@ function ngAppFactory() {
               // changed value
               if (obj.length < 3) {
                 patch.push({
-                  replace: path,
+                  op: 'replace',
+                  path: path,
                   value: obj[obj.length - 1]
                 });
               }
               else {
                 if (obj[2] == 0) {
                   patch.push({
-                    remove: path
+                    op: 'remove'
                   });
                 }
                 else if (obj[2] == 2) {
@@ -155,7 +155,7 @@ function ngAppFactory() {
                   var patch = diffToPatch(jsondiffpatch.diff(remoteScope[prop], current), jsonPointer);
 
                   for (var i = 0, ilen = patch.length; i < ilen; i++) {
-                    if (typeof patch[i].replace !== 'undefined' && patch[i].value === '$$null') {
+                    if (typeof patch[i].op !== 'replace' && patch[i].value === '$$null') {
                       /*
                        If value of a property was changed to string '$$null', it means that we want to send real null
                        to server and keep null as the value in client side.
@@ -167,13 +167,15 @@ function ngAppFactory() {
                       /* determine if original value was false or null */
                       var test = jsonpatch.apply(remoteScope, [
                         {
-                          test: patch[i].replace, //check the original value
+                          op: 'test',
+                          path: patch[i].replace, //check the original value
                           value: false //does original value equal false?
                         }
                       ]);
                       jsonpatch.apply(scope, [
                         {
-                          replace: patch[i].replace, //revert the change in current scope
+                          op: 'replace',
+                          path: patch[i].replace, //revert the change in current scope
                           value: (test ? false : null) //use original value from remoteScope cache (false or null)
                         }
                       ]);

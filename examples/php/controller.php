@@ -68,7 +68,7 @@ else if ($accept == 'json' && $method == 'PATCH') {
   try {
     $sanitized = array();
     foreach ($patchInput as $key => $value) {
-      if (!empty($patchInput[$key]['replace']) && $patchInput[$key]['replace'] === '/View-Model') {
+      if ($patchInput[$key]['op'] === 'replace' && $patchInput[$key]['path'] === '/View-Model') {
         unset($patchInput[$key]);
       }
     }

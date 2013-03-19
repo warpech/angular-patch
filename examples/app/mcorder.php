@@ -12,7 +12,7 @@ function patchMentions($key) {
   global $patchInput;
   if (!empty($patchInput)) {
     foreach ($patchInput as $update) {
-      if (!empty($update['replace']) && strpos($update['replace'], $key) === 0) {
+      if ($update['op'] === 'replace' && strpos($update['path'], $key) === 0) {
         return true;
       }
     }
@@ -40,8 +40,8 @@ function applicationLogic() {
     $items = getProp('Items');
 
     foreach ($patchInput as $update) {
-      if (!empty($update['replace'])) {
-        $split = explode('/', $update['replace']);
+      if ($update['op'] === 'replace') {
+        $split = explode('/', $update['path']);
         if ($split[count($split) - 1] === 'Pick$') {
           $optionId = (int) $split[count($split) - 2];
           $itemId = (int) $split[count($split) - 5];

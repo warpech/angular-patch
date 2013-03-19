@@ -33,7 +33,7 @@ module.exports = function (grunt) {
           'src/bootstrap.js',
           'src/3rdparty/appContext.js',
           'src/3rdparty/jsondiffpatch.js',
-          'src/3rdparty/jsonpatch.js'
+          'src/3rdparty/JSON-Patch/json-patch.js'
         ],
         dest: 'dist/angular-patch.js'
       }

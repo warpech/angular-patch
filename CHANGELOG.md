@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.8 (Mar 19, 2012)
+
+- switch JavaScript JSON Patch library to https://github.com/Starcounter-Jack/JSON-Patch
+- upgrade JsonPatch.inc (PHP) to version that supports JSON Patch Draft 10 (https://github.com/warpech/json-patch-php/tree/draft10)
+- update `serverScope.js` to use the JSON Patch Draft 10 syntax
+- update tests to use the JSON Patch Draft 10 syntax
+
 ## 0.1.7 (Mar 19, 2012)
 
 - upgrade Angular UI Handsontable in the examples to version 0.3.4

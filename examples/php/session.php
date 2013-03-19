@@ -14,13 +14,14 @@ function restartSession() {
 function addToPatchOutput($path, $val) {
   global $patchOutput;
   foreach ($patchOutput as $key => $value) {
-    if ($patchOutput[$key]['replace'] == $path) {
+    if ($patchOutput[$key]['op'] === 'replace' && $patchOutput[$key]['path'] == $path) {
       $patchOutput[$key]['value'] = $val;
       return;
     }
   }
   array_push($patchOutput, array(
-      'replace' => $path,
+      'op' => 'replace',
+      'path' => $path,
       'value' => $val
   ));
 }
