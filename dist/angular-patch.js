@@ -1,7 +1,7 @@
 /**
- * angular-patch 0.1.6
+ * angular-patch 0.1.7
  * 
- * Date: Fri Mar 01 2013 16:51:52 GMT+0100 (Central European Standard Time)
+ * Date: Tue Mar 19 2013 10:17:52 GMT+0100 (Central European Standard Time)
 */
 
 angular.module('StarcounterLib.config', []).value('StarcounterLib.config', {});

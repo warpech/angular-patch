@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.7 HEAD (Mar 1, 2012)
+## 0.1.7 (Mar 19, 2012)
 
 - upgrade Angular UI Handsontable in the examples to version 0.3.4
 - upgrade build system to Grunt 0.4.0 (read instructions how to upgrade here: http://gruntjs.com/upgrading-from-0.3-to-0.4)
