@@ -1,6 +1,6 @@
 # Angular Patch
 
-Synchronizes Angular scope with the server using JSON Patch protocol ([draft-ietf-appsawg-json-patch-04](http://tools.ietf.org/html/draft-ietf-appsawg-json-patch-04)).
+Synchronizes Angular scope with the server using JSON Patch protocol ([draft-ietf-appsawg-json-patch-10](http://tools.ietf.org/html/draft-ietf-appsawg-json-patch-10)).
 
 ## Demo
 
