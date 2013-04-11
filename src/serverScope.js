@@ -226,20 +226,27 @@ angular.module('StarcounterLib', ['panelApp', 'StarcounterLib.config'])
   .directive('ngApp', ngAppFactory())
   .directive('ngRemoteapp', ngAppFactory())
   .directive('uiClick', ['$parse', function ($parse) {
-  var directiveDefinitionObject = {
-    restrict: 'A',
-    compile: function compile(tElement, tAttrs, transclude) {
-      var fn = $parse(tAttrs.uiClick + ' = "$$null"');
-      return function postLink(scope, element, attrs, controller) {
-        element.bind('click', function (event) {
-          scope.$apply(function () {
-            fn(scope, {
-              $event: event
+    var directiveDefinitionObject = {
+      restrict: 'A',
+      compile: function compile(tElement, tAttrs, transclude) {
+        return function postLink(scope, element, attrs, controller) {
+          element.bind('click', function (event) {
+            var fn = $parse(tAttrs.uiClick + ' = "$$null"');
+            scope.$apply(function () {
+              fn(scope, {
+                $event: event
+              });
+            });
+
+            fn = $parse(tAttrs.uiClick + ' = null'); //revert standard null
+            scope.$apply(function () {
+              fn(scope, {
+                $event: event
+              });
             });
           });
-        });
+        }
       }
-    }
-  };
-  return directiveDefinitionObject;
-}]);
+    };
+    return directiveDefinitionObject;
+  }]);
